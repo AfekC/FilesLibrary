@@ -19,7 +19,16 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
+import consts from "../consts";
+
 export default {
   name: "Home",
+  methods: {
+    ...mapMutations(["setCurrentPageName"]),
+  },
+  mounted() {
+    this.setCurrentPageName(consts.PagesConst.PagesNames.HOME_PAGE);
+  },
 };
 </script>

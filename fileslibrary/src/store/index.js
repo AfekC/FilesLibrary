@@ -4,8 +4,13 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {},
-  mutations: {},
+  state: {
+    currentPageName: "",
+  },
+  mutations: {
+    setCurrentPageName(state, pageName) {
+      state.currentPageName = pageName;
+    },
+  },
   actions: {},
-  modules: {},
 });

@@ -1,38 +1,61 @@
 <template>
-  <v-app-bar color="primary" dense>
-    <v-app-bar-nav-icon></v-app-bar-nav-icon>
+  <div>
+    <v-app-bar color="primary" dense maxHeight="7vh">
+      <v-app-bar-nav-icon @click="drawer = true" />
 
-    <v-toolbar-title>Page title</v-toolbar-title>
+      <v-toolbar-title>{{ currentPageName }}</v-toolbar-title>
 
-    <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
 
-    <v-btn icon>
-      <v-icon>mdi-heart</v-icon>
-    </v-btn>
-
-    <v-btn icon>
-      <v-icon>mdi-magnify</v-icon>
-    </v-btn>
-
-    <v-menu left bottom>
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn icon v-bind="attrs" v-on="on">
-          <v-icon>mdi-dots-vertical</v-icon>
-        </v-btn>
-      </template>
-
-      <v-list>
-        <v-list-item v-for="n in 5" :key="n" @click="() => {}">
-          <v-list-item-title>Option {{ n }}</v-list-item-title>
-        </v-list-item>
+      <v-btn icon>
+        <v-icon>mdi-magnify</v-icon>
+      </v-btn>
+    </v-app-bar>
+    <v-navigation-drawer v-model="drawer" absolute temporary>
+      <v-list nav dense>
+        <v-list-item-group active-class="deep-purple--text text--accent-4">
+          <v-list-item v-for="item in list" :key="item.title" :to="item.link">
+            <v-list-item-icon>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item>
+        </v-list-item-group>
       </v-list>
-    </v-menu>
-  </v-app-bar>
+    </v-navigation-drawer>
+  </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   name: "NavBar",
+  data() {
+    return {
+      drawer: false,
+      list: [
+        {
+          icon: "mdi-home",
+          title: "Home",
+          link: "/",
+        },
+        {
+          icon: "mdi-book",
+          title: "Library",
+          link: "/library",
+        },
+        {
+          icon: "mdi-account",
+          title: "Account",
+          link: "/account",
+        },
+      ],
+    };
+  },
+  computed: {
+    ...mapState(["currentPageName"]),
+  },
 };
 </script>
 
