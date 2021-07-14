@@ -1,6 +1,10 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
+import Account from "../views/Account.vue";
+import Library from "../views/Library.vue";
+import About from "../views/About.vue";
+
 
 Vue.use(VueRouter);
 
@@ -13,17 +17,17 @@ const routes = [
   {
     path: "/account",
     name: "Account",
-    component: import(/* webpackChunkName: "about" */ "../views/Account.vue"),
+    component: Account,
   },
   {
     path: "/library",
     name: "Library",
-    component: import(/* webpackChunkName: "about" */ "../views/Library.vue"),
+    component: Library,
   },
   {
     path: "/about",
     name: "About",
-    component: import(/* webpackChunkName: "about" */ "../views/About.vue"),
+    component: About,
   },
 ];
 

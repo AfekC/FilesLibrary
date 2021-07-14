@@ -19,3 +19,15 @@ export default {
   }),
 };
 </script>
+
+<style>
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+</style>
