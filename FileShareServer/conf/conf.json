@@ -1,0 +1,9 @@
+{
+    "api": {
+        "name": "files_library_server",
+        "version": "1.0.0.1",
+        "address": "localhost",
+        "port": "4000"
+    },
+    "dbName": "FilesLibraryDB"
+}
