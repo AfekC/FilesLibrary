@@ -1,14 +1,17 @@
 let express = require('express'),
     db = require("../database/database.js"),
-    filesRouter = express.Router();
+    directoryRoute = express.Router(),
+    multer = require('multer');
 
 /**
- * @typedef File
+ * @typedef Directory
  * @property {integer} id
  * @property {string} file_name
  * @property {boolean} is_public
+ * @property {boolean} is_file
  * @property {integer} size
  * @property {datetime} date_uploaded
+ * @property {parent_dir} parent_dir
  * @property {integer} creator
  */
 
@@ -16,12 +19,12 @@ let express = require('express'),
 
 /**
  * Get all files
- * @route GET /files/
+ * @route GET /directory/
  * @returns {object} 200 - List of files
  * @returns {Error}  default - Unexpected error
  */
- filesRouter.route('/').get((req, res, next) => {
-    var sql = "select * from FILE";
+directoryRoute.route('/').get((req, res, next) => {
+    var sql = "select * from DIRECTORY";
     var params = [];
     db.all(sql, params, (err, rows) => {
         if (err) {
@@ -36,14 +39,14 @@ let express = require('express'),
 });
 
 /**
- * Get a file from its id
- * @route GET /files/{id}
- * @param {string} id.path.required - Database file id from SQLite database
- * @returns {object} 200 - a file
+ * Get a directory from its id
+ * @route GET /directory/{id}
+ * @param {string} id.path.required - Database directory id from SQLite database
+ * @returns {object} 200 - a directory
  * @returns {Error}  default - Unexpected error
  */
- filesRouter.route('/:id').get((req, res, next) => {
-    var sql = "select * from FILE where id = ?";
+directoryRoute.route('/:id').get((req, res, next) => {
+    var sql = "select * from DIRECTORY where id = ?";
     var params = [req.params.id];
     db.get(sql, params, (err, result) => {
         if (err) {
@@ -58,52 +61,53 @@ let express = require('express'),
 });
 
 /**
- * Create a new parameter
- * @route POST /files/
- * @consumes application/json
- * @param {File.model} req.body
- * @returns {object} 200 - New file created in database
+ * Create a new directory
+ * @route POST /directory/
+ * @returns {object} 200 - New directory created in database
  * @returns {Error}  default - Unexpected error
  */
- filesRouter.route('/').post((req, res, next) => {
-    // Checks can be performed here for data format and completeness
-    // var errors=[]
-    // if (errors.length){
-    //     res.status(400).json({"error":errors.join(",")});
-    //     return;
-    // }
+directoryRoute.post('/upload-files', multer().array("files"), (req, res) => {
+    let isSuccess = true;
     console.log(req.body);
-    var data = {
-        file_name: req.body.file_name,
-        is_public: req.body.is_public,
-        size: req.body.size,
-        date_uploaded: req.body.date_uploaded,
-        creator: req.body.creator,
-    };
-    var sql = 'INSERT INTO FILE (file_name, is_public, size, date_uploaded, creator) VALUES (?,?,?,?,?)';
-    var params = [data.file_name, data.is_public, data.size, data.date_uploaded, data.creator];
-    db.run(sql, params, function (err, result) {
-        if (err) {
-            res.status(400).json({ "error": err.message });
-            return;
-        }
-        res.json({
-            message: "success",
-            data: data,
-            id: this.lastID
+    console.log(req.files);
+    req.files.forEach(file => {
+        var data = {
+            directory_name: file.originalname,
+            is_public: req.body.is_public,
+            is_file: true,
+            size: file.size,
+            date_uploaded: (new Date()).toString(),
+            parent_dir: req.body.parent_dir,
+            creator: req.body.creator,
+        };
+        console.log(data);
+        var sql = 'INSERT INTO DIRECTORY (directory_name, is_file, is_public, size, date_uploaded, parent_dir, creator) VALUES (?,?,?,?,?,?,?)';
+        var params = [data.directory_name, data.is_public, data.is_file, data.size, data.date_uploaded, data.parent_dir, data.creator];
+        db.run(sql, params, function (err, result) {
+            if (err) {
+                isSuccess = false;
+            }
         });
+    });
+    if (!isSuccess) {
+        res.status(400).json({ "error": "error uploading files" });
+        return;
+    }
+    res.json({
+        message: "success",
+        id: this.lastID
     });
 });
 
 /**
  * Update a file from its id
- * @route PATCH /files/{id}
+ * @route PATCH /directory/{id}
  * @param {string} id.path.required - Database file id to update
  * @param {File.model} req.body
  * @returns {object} 200 - Update file
  * @returns {Error}  default - Unexpected error
  */
- filesRouter.route('/:id').patch((req, res, next) => {
+directoryRoute.route('/:id').patch((req, res, next) => {
     var data = {
         file_name: req.body.file_name,
         is_public: req.body.is_public,
@@ -135,12 +139,12 @@ let express = require('express'),
 
 /**
  * Delete a file from its id
- * @route DELETE /files/{id}
+ * @route DELETE /directory/{id}
  * @param {string} id.path.required - Database file id to delete
  * @returns {object} 200 - file deleted
  * @returns {Error}  default - Unexpected error
  */
- filesRouter.route('/:id').delete((req, res, next) => {
+directoryRoute.route('/:id').delete((req, res, next) => {
     db.run(
         'DELETE FROM FILE WHERE id = ?',
         req.params.id,
@@ -156,4 +160,4 @@ let express = require('express'),
         });
 });
 
-module.exports = filesRouter;
+module.exports = directoryRoute;

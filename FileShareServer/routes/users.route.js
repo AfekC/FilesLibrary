@@ -17,11 +17,11 @@ let express = require('express'),
 /**
  * Get all users
  * @route GET /users/
- * @returns {object} 200 - List of users
+ * @returns {object} 200 - List of users names
  * @returns {Error}  default - Unexpected error
  */
- usersRoute.route('/').get((req, res, next) => {
-    var sql = "select * from USER";
+ usersRoute.get('/', (req, res, next) => {
+    var sql = "select user_name from USER";
     var params = [];
     db.all(sql, params, (err, rows) => {
         if (err) {
@@ -36,24 +36,29 @@ let express = require('express'),
 });
 
 /**
- * Get a user from its id
- * @route GET /applications/{id}
+ * Get a user from its user_name and passwors
+ * @route GET /users/login
  * @param {string} id.path.required - Database user id from SQLite database
  * @returns {object} 200 - user by id
  * @returns {Error}  default - Unexpected error
  */
- usersRoute.route('/:id').get((req, res, next) => {
-    var sql = "select * from USER where id = ?";
-    var params = [req.params.id];
+ usersRoute.post('/login', (req, res) => {
+     console.log(req.body);
+    var sql = "select * from USER where user_name = ? AND password = ?";
+    var params = [req.body.user_name, req.body.password];
     db.get(sql, params, (err, result) => {
         if (err) {
             res.status(400).json({ "error": err.message });
             return;
         }
-        res.json({
-            message: "success",
-            data: result
-        });
+        if (result) {
+            res.json({
+                message: "success",
+                data: result
+            });
+        } else {
+            res.json({ message: "invalid user name or password" });
+        }
     });
 });
 
@@ -65,7 +70,7 @@ let express = require('express'),
  * @returns {object} 200 - New user created in database
  * @returns {Error}  default - Unexpected error
  */
- usersRoute.route('/').post((req, res, next) => {
+ usersRoute.post("/", (req, res) => {
     // Checks can be performed here for data format and completeness
     // var errors=[]
     // if (errors.length){
@@ -93,67 +98,6 @@ let express = require('express'),
             id: this.lastID
         });
     });
-});
-
-/**
- * Update a user from its id
- * @route PATCH /users/{id}
- * @param {string} id.path.required - Database user id to update
- * @param {User.model} req.body
- * @returns {object} 200 - Updated applications
- * @returns {Error}  default - Unexpected error
- */
- usersRoute.route('/:id').patch((req, res, next) => {
-    var data = {
-        first_name: req.body.first_name,
-        last_name: req.body.last_name,
-        user_name: req.body.user_name,
-        image: req.body.image,
-        password: req.body.password,
-    };
-    db.run(
-        `UPDATE Applications SET 
-        first_name = COALESCE(?,first_name),
-        last_name = COALESCE(?,last_name),
-        user_name = COALESCE(?,user_name),
-        image = COALESCE(?,image),
-        password = COALESCE(?,password)
-        WHERE id = ?`, 
-        [data.first_name,data.last_name,data.user_name,data.image,data.password],
-        function(err, result) {
-            if (err) {
-                res.status(400).json({ "error": res.message });
-                return;
-            }
-            res.json({
-                message: "success",
-                data: data,
-                changes: this.changes
-            });
-        });
-});
-
-/**
- * Delete an user from its id
- * @route DELETE /users/{id}
- * @param {string} id.path.required - Database user id to delete
- * @returns {object} 200 - List of changes on user
- * @returns {Error}  default - Unexpected error
- */
- usersRoute.route('/:id').delete((req, res, next) => {
-    db.run(
-        'DELETE FROM USER WHERE id = ?',
-        req.params.id,
-        function(err, result) {
-            if (err) {
-                res.status(400).json({ "error": res.message });
-                return;
-            }
-            res.json({
-                message: "success",
-                changes: this.changes
-            });
-        });
 });
 
 module.exports = usersRoute;

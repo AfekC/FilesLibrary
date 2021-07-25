@@ -35,13 +35,7 @@
           >
             Close
           </v-btn>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click.stop="$emit('update:dialog', false)"
-          >
-            Log In
-          </v-btn>
+          <v-btn color="blue darken-1" text @click.stop="logIn"> Log In </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -49,6 +43,9 @@
 </template>
 
 <script>
+import axios from "axios";
+import Swal from "sweetalert2";
+
 export default {
   data() {
     return {
@@ -58,6 +55,29 @@ export default {
   },
   props: {
     dialog: Boolean,
+  },
+  methods: {
+    logIn() {
+      const formData = {
+        user_name: this.userName,
+        password: this.password,
+      };
+      axios
+        .post("http://localhost:4000/users/login", formData)
+        .then((response) => {
+          if (response.data.data) {
+            console.log("Success!");
+            console.log({ response });
+            Swal.fire("Success", "you logded in", "success");
+            this.$emit("update:dialog", false);
+          } else {
+            Swal.fire("Error", "wrong input", "error");
+          }
+        })
+        .catch((error) => {
+          console.log({ error });
+        });
+    },
   },
 };
 </script>

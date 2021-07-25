@@ -6,8 +6,7 @@ let express = require('express'),
     expressSwagger = require('express-swagger-generator')(app),
     swaggerUi = require('express-swaggerize-ui'),
     usersRoute = require('./routes/users.route'),
-    filesRoute = require('./routes/files.route'),
-    foldersRoute = require('./routes/folders.route'),
+    directoryRoute = require('./routes/directory.route'),
     conf = require("./conf/conf.json");
 
 // Setting up port with express js
@@ -17,8 +16,7 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'dist/mean-stack-crud-app')));
 app.use('/', express.static(path.join(__dirname, 'dist/mean-stack-crud-app')));
 app.use('/users', usersRoute);
-app.use('/files', filesRoute);
-app.use('/folders', foldersRoute);
+app.use('/directory', directoryRoute);
 
 // Create port
 const port = process.env.PORT || conf.api.port || 4000;
