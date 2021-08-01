@@ -4,6 +4,7 @@
       <v-card-title class="justify-center">
         <span class="text-h5">select your files</span>
       </v-card-title>
+      <v-checkbox v-if="isLoggedIn" v-model="isPublic" label="public" class="pl-13" />
       <v-file-input
         v-model="files"
         width="30vw"
@@ -15,7 +16,7 @@
         prepend-icon="mdi-paperclip"
         outlined
         style="width: 30vw"
-        class="ma-5 ml-13"
+        class="ma-2 ml-11"
       >
         <template v-slot:selection="{ index, text }">
           <v-chip
@@ -53,11 +54,14 @@
 </template>
 
 <script>
-import axios from "axios";
+import itemsAPI from "../API/itemsAPI.js";
+import Swal from "sweetalert2";
+import { mapGetters } from "vuex";
 
 export default {
   data() {
     return {
+      isPublic: true,
       files: [],
     };
   },
@@ -65,7 +69,7 @@ export default {
     dialog: Boolean,
   },
   methods: {
-    uploadFiles() {
+    async uploadFiles() {
       this.$emit("update:dialog", false);
       if (this.files) {
         let formData = new FormData();
@@ -76,23 +80,23 @@ export default {
         }
 
         // additional data
-        formData.append("is_public", true);
-        formData.append("creator", 1);
-        formData.append("parent_dir", 1);
+        formData.append("isPublic", this.isPublic);
+        formData.append("creator", this.getUserId);
+        formData.append("parentItem", 1);
 
-        axios
-          .post("http://localhost:4000/directory/upload-files", formData)
-          .then((response) => {
-            console.log("Success!");
-            console.log({ response });
-          })
-          .catch((error) => {
-            console.log({ error });
-          });
+        const isSeccessful = await itemsAPI.uploadFiles(formData);
+        if (isSeccessful) {
+          Swal.fire("Success", "all files uploaded", "success");
+        } else {
+          Swal.fire("Error", "error uploading one or more files", "error");
+        }
       } else {
         console.log("there are no files.");
       }
     },
+  },
+  computed: {
+    ...mapGetters(['isLoggedIn', 'getUserId']),
   },
 };
 </script>

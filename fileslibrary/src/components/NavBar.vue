@@ -27,7 +27,7 @@
           </v-list-item>
         </v-list-item-group>
       </v-list>
-      <template v-if="isSignIn" v-slot:append>
+      <template v-if="isLoggedIn" v-slot:append>
         <div class="pa-2">
           <v-btn @click.stop="dialog = true" block> Logout </v-btn>
           <v-dialog v-model="dialog" max-width="290">
@@ -82,7 +82,7 @@ export default {
   },
   computed: {
     ...mapState(["currentPageName"]),
-    ...mapGetters(["getUserName", "isSignIn"]),
+    ...mapGetters(["getUserName", "isLoggedIn"]),
   },
   methods: {
     ...mapActions(["logout"]),

@@ -1,5 +1,5 @@
 <template>
-  <v-container v-if="!isSignIn">
+  <v-container v-if="!isLoggedIn">
     <v-row class="text-center">
       <v-col class="text-center" style="padding-top: 25vh">
         <h1 class="display-2 font-weight-bold">You Are Not Signed In</h1>
@@ -24,7 +24,8 @@
     <v-row>
       <v-card width="100%" height="8vh">
         <v-row>
-          <v-col cols="8" class="ma-0 pt-2 pl-10 mr-10">
+          <v-col cols="2"></v-col>
+          <v-col cols="8" class="ma-0 pt-2">
             <v-card-title>
               <v-text-field
                 v-model="search"
@@ -35,12 +36,6 @@
                 hide-details
               ></v-text-field>
             </v-card-title>
-          </v-col>
-          <v-col cols="3">
-            <v-btn color="blue-grey" class="ma-2 white--text" width="100%">
-              Upload
-              <v-icon right dark> mdi-cloud-upload </v-icon>
-            </v-btn>
           </v-col>
         </v-row>
       </v-card>
@@ -102,7 +97,7 @@ export default {
     this.setCurrentPageName(consts.PagesConst.PagesNames.ACCOUNT_PAGE);
   },
   computed: {
-    ...mapGetters(["isSignIn", "getUserImage", "getUserFullName"]),
+    ...mapGetters(["isLoggedIn", "getUserImage", "getUserFullName"]),
   },
   methods: {
     ...mapMutations(["setCurrentPageName"]),

@@ -71,8 +71,7 @@
 </template>
 
 <script>
-import axios from "axios";
-import Swal from "sweetalert2";
+import { mapActions } from "vuex";
 
 export default {
   data() {
@@ -115,26 +114,18 @@ export default {
     dialog: Boolean,
   },
   methods: {
+    ...mapActions(["signin"]),
     saveUser() {
       if (this.isValidate) {
         const formData = {
-          user_name: this.userName,
-          first_name: this.firstName,
-          last_name: this.lastName,
+          userName: this.userName,
+          firstName: this.firstName,
+          lastName: this.lastName,
           password: this.password,
         };
-        axios
-          .post("http://localhost:4000/users/", formData)
-          .then((response) => {
-            console.log("Success!");
-            console.log({ response });
-            Swal.fire("Success", "you signed in", "success");
-            this.$emit("update:dialog", false);
-          })
-          .catch((error) => {
-            console.log({ error });
-            Swal.fire("Error", "error creating user", "error");
-          });
+        if (this.signin(formData)) {
+          this.$emit("update:dialog", false);
+        }
       }
     },
   },

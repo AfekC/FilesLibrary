@@ -9,14 +9,36 @@
 
 <script>
 import NavBar from "./components/NavBar";
+import { mapActions, mapGetters, mapMutations } from "vuex";
+import usersAPI from "./API/usersAPI.js";
 
 export default {
   name: "App",
   components: { NavBar },
-
-  data: () => ({
-    //
-  }),
+  methods: {
+    ...mapActions(["logout", "logout"]),
+    ...mapMutations(["setUser"]),
+  },
+  computed: {
+    ...mapGetters(["isLoggedIn", "isUserEmpty"]),
+  },
+  async created() {
+    if (this.isLoggedIn && this.isUserEmpty) {
+      const user = await usersAPI.getUserByToken();
+      if (!user) {
+        this.logout();
+      }
+      this.setUser(user || {});
+    }
+    this.$http.interceptors.response.use(undefined, (err) => {
+      return new Promise(() => {
+        if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
+          this.logout();
+        }
+        throw err;
+      });
+    });
+  },
 };
 </script>
 
