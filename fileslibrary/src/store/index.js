@@ -14,6 +14,8 @@ export default new Vuex.Store({
     token: localStorage.getItem('token') || '',
     status: '',
     libraryDirPath: '',
+    currDirId: -1,
+    parentsDirsIds: [],
   },
   mutations: {
     setUser(state, user) {
@@ -48,6 +50,18 @@ export default new Vuex.Store({
       const splitPath = state.libraryDirPath.split('\\');
       splitPath.pop()
       state.libraryDirPath = splitPath.join('\\');
+    },
+    setCurrDirId(state, id) {
+      state.currDirId = id;
+    },
+    setParentsDirsIds(state, parentsIds) {
+      state.parentsDirsIds = parentsIds;
+    },
+    addToParentsDirsIds(state, id) {
+      state.parentsDirsIds += id;
+    },
+    rollBackParentDirsIds(state) {
+      state.parentsDirsIds.pop();
     },
   },
   getters: {

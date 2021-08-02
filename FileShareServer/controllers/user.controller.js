@@ -9,7 +9,7 @@ const encodeToken = (tokenData) => {
 }
 
 const decodeToken = (token) => {
-    return njwt.verify(token, APP_SECRET).setExpiration(new Date().getTime() + 604800000).body; //1 week
+    return njwt.verify(token, APP_SECRET).setExpiration(-1).body;
 }
 
 export const authMiddleware = async (req, res, next) => {

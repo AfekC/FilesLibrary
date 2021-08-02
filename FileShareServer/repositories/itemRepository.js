@@ -2,12 +2,11 @@ import dao from './dao';
 
 export default class {
 
-    static async getAllItems() {
-        return await dao.all("SELECT * FROM ITEM", [])
-    }
-
-    static async getItemById(id) {
-        return await dao.get("SELECT * FROM ITEM WHERE id = ?", [id])
+    static async getItemChiledsById(id) {
+        if (id) {
+            return await dao.all("SELECT * FROM ITEM WHERE parentItem=?", [id]);
+        }
+        return await dao.all("SELECT * FROM ITEM WHERE parentItem is null", []);
     }
 
     static async addItem(data) {

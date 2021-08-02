@@ -16,10 +16,10 @@ const createFolder = async (data) => {
     return false;
 };
 
-const getFilesByPath = async (path) => {
-    const res = await post('item/', path);
+const getFilesByPath = async (currDirId) => {
+    const res = await post('item/', { currDirId });
     if (res) {
-        return res.files;
+        return res.data.items;
     }
     return;
 };

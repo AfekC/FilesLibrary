@@ -53,22 +53,38 @@
         <v-data-table
           height="75vh"
           :headers="headers"
-          :items="items"
+          :items="sortedItems"
           :search="search"
           :items-per-page="999"
           hide-default-footer
           dense
-        ></v-data-table>
+        >
+          <template #item="{ item }">
+            <tr>
+              <td>
+                <v-icon v-if="!item.isFile">mdi mdi-folder-outline</v-icon>
+              </td>
+              <td>{{ item.name }}</td>
+              <td>{{ item.size }}</td>
+              <td>{{ item.dateUploaded }}</td>
+              <td class="pa-0">
+                <v-icon v-if="!item.isPublic">mdi mdi-lock</v-icon>
+              </td>
+              <td class="pa-0"><v-icon>mdi mdi-information-outline</v-icon></td>
+              <td class="pa-0"><v-icon>mdi mdi-delete</v-icon></td>
+            </tr>
+          </template>
+        </v-data-table>
       </v-card>
     </v-row>
   </v-container>
 </template>
 <script>
-import { mapMutations } from "vuex";
+import { mapMutations, mapState } from "vuex";
 import consts from "../consts";
 import UploadFiles from "../components/UploadFiles.vue";
 import CreateFolder from "../components/CreateFolder.vue";
-import { getFilesByPath } from "../API/itemsAPI.js"
+import itemsAPI from "../API/itemsAPI.js";
 
 export default {
   name: "Library",
@@ -78,22 +94,31 @@ export default {
       uploadFilesDialog: false,
       createFolderDialog: false,
       headers: [
-        { align: "start", sortable: false, value: "icon" },
-        { text: "is public", sortable: false, value: "is_public" },
-        { text: "name", filterable: true, value: "name" },
-        { sortable: false, value: "info" },
+        { align: "start", sortable: false, value: "type", width: "8%" },
+        { text: "name", filterable: true, value: "name", width: "80%" },
+        { text: "size", sortable: false, value: "size", width: "5%" },
+        { text: "date modified", value: "date", width: "5%" },
+        { sortable: false, value: "isPublic", width: "2%" },
+        { sortable: false, value: "trash", width: "2%" },
       ],
       items: [],
       search: "",
     };
   },
   async mounted() {
-    this.items = await getFilesByPath(this.libraryDirPath);
+    this.items = await itemsAPI.getFilesByPath(
+      this.currDirId === -1 ? null : this.currDirId
+    );
     console.log(this.items);
     this.setCurrentPageName(consts.PagesConst.PagesNames.LIBRARY_PAGE);
   },
   computed: {
-    ...mapState(['libraryDirPath']),
+    ...mapState(["libraryDirPath", "currDirId"]),
+    sortedItems() {
+      return this.items.slice(0).sort((value) => {
+        return value ? -1 : 1;
+      });
+    },
   },
   methods: {
     ...mapMutations(["setCurrentPageName"]),

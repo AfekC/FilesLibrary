@@ -1,14 +1,18 @@
 import repository from '../repositories/itemRepository';
+import conf from '../conf/conf.json'
+const fs = require('fs');
 
 export default class {
     static async getAllItems(req, res) {
-        let items = await repository.getAllItems();
+        const currDirId = req.body.currDirId;
+        console.log(currDirId)
+        let items = await repository.getItemChiledsById(currDirId);
         return res.send({ items });
     };
 
-    static async getItemById(req, res) {
-        let item = await repository.getItemById(req.params.id)
-        return res.send({ item });
+    static async getFileByPath(req, res) {
+        const file = fs.readFileSync(conf.baseLibraryPath + '/' + req.params.path);
+        return res.send(file);
     }
 
     static async addItem(req, res) {
