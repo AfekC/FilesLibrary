@@ -13,5 +13,6 @@ module.exports = {
     "vue/no-unused-vars": "off",
     "linebreak-style": "off",
     "prettier/prettier": "off",
+    "vue/no-async-in-computed-properties": "off"
   },
 };

@@ -78,6 +78,16 @@ export const signin = async (req, res) => {
     return res.json({ accessToken, user });
 }
 
+export const getUserNameById = async (req, res) => {
+    const id = req.params.id;
+    if (id) {
+        const username = await repository.getUsernameById(id)
+        return res.json(username);
+    } else {
+        res.status(404);
+    }
+};
+
 export const getUserByToken = async (req, res) => {
     if (!!req.userId) {
         const user = await repository.getUserById(req.userId);

@@ -1,9 +1,10 @@
-import { login, signin, getUserByToken } from '../controllers/user.controller';
+import { login, signin, getUserNameById, getUserByToken } from '../controllers/user.controller';
 import * as express from 'express';
 const router = express.Router();
 
 router.post('/login', login);
 router.post('/signin', signin);
+router.get('/username/:id', getUserNameById);
 router.get('/', getUserByToken);
 
 module.exports = router;

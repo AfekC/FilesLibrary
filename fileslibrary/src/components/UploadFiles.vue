@@ -1,6 +1,13 @@
 <template>
   <v-dialog v-model="dialog" persistent width="40vw" style="height: 50vh">
-    <v-card justify="center">
+    <v-card :loading="loading" justify="center">
+      <template slot="progress">
+        <v-progress-linear
+            color="deep-purple"
+            height="10"
+            indeterminate
+        ></v-progress-linear>
+      </template>
       <v-card-title class="justify-center">
         <span class="text-h5">select your files</span>
       </v-card-title>
@@ -15,6 +22,7 @@
         placeholder="Select your files"
         prepend-icon="mdi-paperclip"
         outlined
+        show-size
         style="width: 30vw"
         class="ma-2 ml-11"
       >
@@ -56,13 +64,14 @@
 <script>
 import itemsAPI from "../API/itemsAPI.js";
 import Swal from "sweetalert2";
-import { mapGetters } from "vuex";
+import {mapGetters, mapState} from "vuex";
 
 export default {
   data() {
     return {
       isPublic: true,
       files: [],
+      loading: false,
     };
   },
   props: {
@@ -70,8 +79,8 @@ export default {
   },
   methods: {
     async uploadFiles() {
-      this.$emit("update:dialog", false);
       if (this.files) {
+        this.loading = true;
         let formData = new FormData();
 
         // files
@@ -82,14 +91,17 @@ export default {
         // additional data
         formData.append("isPublic", this.isPublic);
         formData.append("creator", this.getUserId);
-        formData.append("parentItem", 1);
+        formData.append("parentItem", this.currDirId);
 
-        const isSeccessful = await itemsAPI.uploadFiles(formData);
-        if (isSeccessful) {
+        const isSuccess = await itemsAPI.uploadFiles(formData);
+        if (isSuccess) {
           Swal.fire("Success", "all files uploaded", "success");
+          this.$emit('update');
         } else {
           Swal.fire("Error", "error uploading one or more files", "error");
         }
+        this.loading = false;
+        this.$emit("update:dialog", false);
       } else {
         console.log("there are no files.");
       }
@@ -97,6 +109,7 @@ export default {
   },
   computed: {
     ...mapGetters(['isLoggedIn', 'getUserId']),
+    ...mapState(['currDirId'])
   },
 };
 </script>

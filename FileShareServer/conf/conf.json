@@ -7,5 +7,6 @@
     },
     "dbName": "FilesLibraryDB.sqlite3",
     "saltRounds": 10,
-    "baseLibraryPath": "D:\\libraryForProject"
+    "baseLibraryPath": "D:\\libraryForProject",
+    "tempPath": "D:\\"
 }

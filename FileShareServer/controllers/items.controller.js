@@ -5,7 +5,6 @@ const fs = require('fs');
 export default class {
     static async getAllItems(req, res) {
         const currDirId = req.body.currDirId;
-        console.log(currDirId)
         let items = await repository.getItemChiledsById(currDirId);
         return res.send({ items });
     };
@@ -16,23 +15,23 @@ export default class {
     }
 
     static async addItem(req, res) {
-        let isAllSeccess = true;
-        console.log(req.files);
-        req.files.forEach(async file => {
+        let isAllSuccess = true;
+        req.files.forEach(async (file) => {
             const data = {
                 name: file.originalname,
                 isPublic: req.body.isPublic,
                 isFile: true,
                 size: file.size,
-                dateUploaded: (new Date()).toString(),
-                parentDir: req.body.parentDir,
-                creator: req.body.creator,
+                dateUploaded: (new Date()).getTime(),
+                parentItem: req.body.parentItem,
+                creator: req.body.creator === 'undefined' ? undefined : req.body.creator,
             };
-            if (!await repository.addItem(data)) {
-                isAllSeccess = false;
+            const r = await repository.addItem(data);
+            if (r) {
+                isAllSuccess = false;
             }
         });
-        if (isAllSeccess) {
+        if (isAllSuccess) {
             return res.json({
                 message: "success",
             });
@@ -43,12 +42,18 @@ export default class {
         }
     }
     static async newFolder(req, res) {
-        console.log(req.body);
+        const isFolderExists = (await repository.getItemByNameAndParent(req.body.name, req.body.parentItem))
+            .some((folder) => !folder.isFile).length > 0;
+        if (isFolderExists) {
+            return res.status(400).send({
+                message: 'folder name is already exists'
+            });
+        }
         var data = {
             name: req.body.name,
             isPublic: req.body.isPublic,
             isFile: false,
-            dateUploaded: (new Date()).toString(),
+            dateUploaded: (new Date()).getTime(),
             parentItem: req.body.parentItem,
             creator: req.body.creator,
         };

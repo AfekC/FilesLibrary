@@ -9,14 +9,15 @@ const uploadFiles = async (data) => {
 };
 
 const createFolder = async (data) => {
-    const res = await post('item/new_folder', data);
-    if (res) {
-        return true;
-    }
-    return false;
+    return  await post('item/new_folder', data).then(() => {
+        return true
+    }).catch((e) => {
+        console.log(e)
+        return false
+    });
 };
 
-const getFilesByPath = async (currDirId) => {
+const getFilesByCurrentFolderId = async (currDirId) => {
     const res = await post('item/', { currDirId });
     if (res) {
         return res.data.items;
@@ -27,5 +28,5 @@ const getFilesByPath = async (currDirId) => {
 export default {
     uploadFiles,
     createFolder,
-    getFilesByPath,
+    getFilesByCurrentFolderId,
 };

@@ -12,6 +12,10 @@ export default class {
         return dao.get('SELECT * FROM USER WHERE id = ?', [id]);
     }
 
+    static async getUsernameById(id) {
+        return dao.get('SELECT username FROM USER WHERE id = ?', [id]);
+    }
+
     static async addUser(user) {
         const { firstName, lastName, userName, image, password } = user;
 

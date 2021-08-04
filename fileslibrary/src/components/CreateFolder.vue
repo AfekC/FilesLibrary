@@ -25,12 +25,12 @@
 <script>
 import itemsAPI from "../API/itemsAPI.js";
 import Swal from "sweetalert2";
-import { mapGetters } from "vuex";
+import {mapGetters, mapState} from "vuex";
 
 export default {
   data() {
     return {
-      isPublic: false,
+      isPublic: true,
       fileName: "",
     };
   },
@@ -39,26 +39,28 @@ export default {
   },
   methods: {
     async createFolder() {
-      this.$emit("update:dialog", false);
       if (this.fileName.length > 0) {
         const formData = {
           name: this.fileName,
           isPublic: this.isPublic,
-          parentItem: 1,
+          parentItem: this.currDirId === -1 ? null : this.currDirId,
           creator: this.getUserId,
         };
-        const isSeccessful = await itemsAPI.createFolder(formData);
-        if (isSeccessful) {
-          Swal.fire("Success", "folder createsd", "success");
+        const isSuccessful = await itemsAPI.createFolder(formData);
+        if (isSuccessful) {
+          Swal.fire("Success", "folder created", "success");
+          this.$emit('update');
         } else {
           Swal.fire("Error", "error creating the folder", "error");
         }
       } else {
-        console.log("there are no files.");
+        console.log("file name is empty");
       }
+      this.$emit("update:dialog", false);
     },
   },
   computed: {
+    ...mapState(['currDirId']),
     ...mapGetters(['isLoggedIn', 'getUserId']),
   },
 };

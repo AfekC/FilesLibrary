@@ -44,7 +44,7 @@ export default new Vuex.Store({
       state.libraryDirPath = path;
     },
     addToLibraryDirPath(state, path) {
-      state.libraryDirPath = `${state.libraryDirPath}\\${path}`;
+      state.libraryDirPath = `${state.libraryDirPath}${path}\\`;
     },
     RollBackLibraryDirPath(state) {
       const splitPath = state.libraryDirPath.split('\\');
@@ -58,7 +58,7 @@ export default new Vuex.Store({
       state.parentsDirsIds = parentsIds;
     },
     addToParentsDirsIds(state, id) {
-      state.parentsDirsIds += id;
+      state.parentsDirsIds.push(id);;
     },
     rollBackParentDirsIds(state) {
       state.parentsDirsIds.pop();
@@ -124,6 +124,11 @@ export default new Vuex.Store({
         delete axios.defaults.headers.common['Authorization']
         resolve()
       })
-    }
+    },
+    enterFolder({ state, commit }, item) {
+      commit('addToParentsDirsIds', state.currDirId);
+      commit('setCurrDirId', item.id)
+      commit('addToLibraryDirPath', item.name);
+    },
   },
 });
