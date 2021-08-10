@@ -13,9 +13,7 @@ export default new Vuex.Store({
     user: {},
     token: localStorage.getItem('token') || '',
     status: '',
-    libraryDirPath: '',
-    currDirId: -1,
-    parentsDirsIds: [],
+    parentsDirs: [],
   },
   mutations: {
     setUser(state, user) {
@@ -40,28 +38,16 @@ export default new Vuex.Store({
       state.status = ''
       state.token = ''
     },
-    setLibraryDirPath(state, path) {
-      state.libraryDirPath = path;
+    setParentsDirsIds(state, parents) {
+      state.parentsDirs = parents;
     },
-    addToLibraryDirPath(state, path) {
-      state.libraryDirPath = `${state.libraryDirPath}${path}\\`;
-    },
-    RollBackLibraryDirPath(state) {
-      const splitPath = state.libraryDirPath.split('\\');
-      splitPath.pop()
-      state.libraryDirPath = splitPath.join('\\');
-    },
-    setCurrDirId(state, id) {
-      state.currDirId = id;
-    },
-    setParentsDirsIds(state, parentsIds) {
-      state.parentsDirsIds = parentsIds;
-    },
-    addToParentsDirsIds(state, id) {
-      state.parentsDirsIds.push(id);;
+    addToParentsDirsIds(state, folder) {
+      if (!state.parentsDirs.some((d) => d.id === folder.id)) {
+        state.parentsDirs.push(folder);
+      }
     },
     rollBackParentDirsIds(state) {
-      state.parentsDirsIds.pop();
+      state.parentsDirs.pop();
     },
   },
   getters: {
@@ -71,12 +57,8 @@ export default new Vuex.Store({
     getUserFullName: state => `${state.user.firstName || ''} ${state.user.lastName || ''}`,
     isLoggedIn: state => !!state.token,
     authStatus: state => state.status,
-    getUserId(state, getters) {
-      if (getters.isLoggedIn) {
-        return state.user.id;
-      }
-      return;
-    }
+    getUserId: (state, getters) => getters.isLoggedIn ? state.user.id : undefined,
+    getCurrentDirectoryId: state => state.parentsDirs.length > 0 ? state.parentsDirs[state.parentsDirs.length - 1].id : -1,
   },
   actions: {
     async login({ commit }, formData) {
@@ -125,10 +107,11 @@ export default new Vuex.Store({
         resolve()
       })
     },
-    enterFolder({ state, commit }, item) {
-      commit('addToParentsDirsIds', state.currDirId);
-      commit('setCurrDirId', item.id)
-      commit('addToLibraryDirPath', item.name);
+    rollDirToId({ state, commit, getters }, id) {
+      if (!state.parentsDirs.some((dir) => dir.id === id)) {return}
+      while (getters.getCurrentDirectoryId != id) {
+        commit('rollBackParentDirsIds');
+      }
     },
   },
 });

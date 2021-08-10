@@ -37,8 +37,10 @@ export default class {
                 size            BIGINT,
                 dateUploaded    DATE,
                 isFile          BOOLEAN,
-                parentItem      INTEGER  CONSTRAINT parentItem REFERENCES ITEM(id),
-                creator         INTEGER  CONSTRAINT fileCreator REFERENCES USER (id) 
+                parentItem      INTEGER,
+                creator         INTEGER,
+                CONSTRAINT fk_parent_item FOREIGN KEY (parentItem) REFERENCES ITEM(id) ON DELETE CASCADE,
+                CONSTRAINT fk_creator FOREIGN KEY (creator) REFERENCES USER(id) ON DELETE SET NULL
             ); `;
             db.run(createItemsTable, [], function (err) {
                 if (err) {

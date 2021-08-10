@@ -32,6 +32,17 @@ export default class {
     }
 
     static async getItemByNameAndParent(name, parentItem) {
-        return await dao.all(`SELECT * FROM ITEM WHERE name = ? AND parentItem = ?`, [name, parentItem]);
+        if (parentItem) {
+            return await dao.all(`SELECT * FROM ITEM WHERE name = ? AND parentItem = ?`, [name, parentItem]);
+        }
+        return await dao.all(`SELECT * FROM ITEM WHERE name = ? AND parentItem IS NULL`, [name]);
+    }
+
+    static async getItemById(id) {
+        return await dao.all(`SELECT * FROM ITEM WHERE id = ?`, [id]);
+    }
+
+    static async deleteItem(id) {
+        return await dao.run(`DELETE FROM ITEM WHERE id = ?`, [id]).then((res) => true).catch((err) => false);
     }
 }

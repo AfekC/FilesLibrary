@@ -25,7 +25,7 @@
 <script>
 import itemsAPI from "../API/itemsAPI.js";
 import Swal from "sweetalert2";
-import {mapGetters, mapState} from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
   data() {
@@ -43,7 +43,7 @@ export default {
         const formData = {
           name: this.fileName,
           isPublic: this.isPublic,
-          parentItem: this.currDirId === -1 ? null : this.currDirId,
+          parentItem: this.getCurrentDirectoryId === -1 ? null : this.getCurrentDirectoryId,
           creator: this.getUserId,
         };
         const isSuccessful = await itemsAPI.createFolder(formData);
@@ -60,8 +60,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['currDirId']),
-    ...mapGetters(['isLoggedIn', 'getUserId']),
+    ...mapGetters(['isLoggedIn', 'getUserId', 'getCurrentDirectoryId']),
   },
 };
 </script>

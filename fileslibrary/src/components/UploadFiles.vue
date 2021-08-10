@@ -64,7 +64,7 @@
 <script>
 import itemsAPI from "../API/itemsAPI.js";
 import Swal from "sweetalert2";
-import {mapGetters, mapState} from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
   data() {
@@ -91,7 +91,7 @@ export default {
         // additional data
         formData.append("isPublic", this.isPublic);
         formData.append("creator", this.getUserId);
-        formData.append("parentItem", this.currDirId);
+        formData.append("parentItem", this.getCurrentDirectoryId === -1 ? null : this.getCurrentDirectoryId);
 
         const isSuccess = await itemsAPI.uploadFiles(formData);
         if (isSuccess) {
@@ -108,8 +108,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['isLoggedIn', 'getUserId']),
-    ...mapState(['currDirId'])
+    ...mapGetters(['isLoggedIn', 'getUserId', 'getCurrentDirectoryId']),
   },
 };
 </script>
