@@ -40,9 +40,20 @@ const getUserNameById = async (id) => {
     return data.userName;
 };
 
+const getUsers = async () => {
+    const data = await get('user/all/').then(response => {
+        return response.data;
+    }).catch(() => {
+        console.error("ERROR get users");
+        return [];
+    })
+    return data.users;
+};
+
 export default {
     login,
     signin,
     getUserByToken,
     getUserNameById,
+    getUsers,
 };

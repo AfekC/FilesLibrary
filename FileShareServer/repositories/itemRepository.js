@@ -2,26 +2,25 @@ import dao from './dao';
 
 export default class {
 
-    static async getItemChiledsById(id) {
-        let items, moreItems;
-        if (id) {
+    static async getItemChiledsById(parentId, userId) {
+        let items;
+        if(parentId) {
             items =  await dao.all(`SELECT ITEM.*, USER.username AS creatorUsername
-                                    FROM ITEM JOIN USER
-                                        ON (ITEM.creator=USER.id
-                                            OR USER.id IS NULL)
-                                    WHERE parentItem = ?`, [id]);
-            moreItems = await dao.all(`SELECT * FROM ITEM
-                                    WHERE parentItem = ? AND creator is null`, [id]);
+                                        FROM ITEM
+                                                 LEFT JOIN USER ON (ITEM.creator=USER.id OR USER.id IS NULL)
+                                                 LEFT JOIN USER_TO_ITEM ON (ITEM.id = USER_TO_ITEM.itemId)
+                                        WHERE parentItem = ?
+                                          AND ( isPublic = true OR userId = ?)`
+                , [parentId, userId]);
         } else {
-            items = await dao.all(`SELECT ITEM.*, USER.username AS creatorUsername
-                                    FROM ITEM JOIN USER
-                                        ON (ITEM.creator=USER.id
-                                            OR USER.id IS NULL)
-                                    WHERE parentItem is null`, []);
-            moreItems = await dao.all(`SELECT * FROM ITEM
-                                    WHERE parentItem is null AND creator is null`, []);
+            items =  await dao.all(`SELECT ITEM.*, USER.username AS creatorUsername
+                                    FROM ITEM
+                                             LEFT JOIN USER ON (ITEM.creator=USER.id OR USER.id IS NULL)
+                                             LEFT JOIN USER_TO_ITEM ON (ITEM.id = USER_TO_ITEM.itemId)
+                                    WHERE parentItem IS NULL
+                                      AND ( isPublic = true OR userId = ?)`
+                , [userId]);
         }
-        items.push(...moreItems);
         return items;
     }
 
@@ -33,16 +32,26 @@ export default class {
 
     static async getItemByNameAndParent(name, parentItem) {
         if (parentItem) {
-            return await dao.all(`SELECT * FROM ITEM WHERE name = ? AND parentItem = ?`, [name, parentItem]);
+            return await dao.get(`SELECT * FROM ITEM WHERE name = ? AND parentItem = ?`, [name, parentItem]);
         }
-        return await dao.all(`SELECT * FROM ITEM WHERE name = ? AND parentItem IS NULL`, [name]);
+        return await dao.get(`SELECT * FROM ITEM WHERE name = ? AND parentItem IS NULL`, [name]);
     }
 
-    static async getItemById(id) {
-        return await dao.all(`SELECT * FROM ITEM WHERE id = ?`, [id]);
+    static async getItemById(itemId, userId) {
+        return await dao.all(`SELECT ITEM.* FROM ITEM 
+                                        LEFT JOIN USER_TO_ITEM ON ITEM.id = USER_TO_ITEM.itemId
+                                    WHERE id = ? AND ( isPublic = true OR userId = ?)`, [itemId, userId]);
     }
 
     static async deleteItem(id) {
-        return await dao.run(`DELETE FROM ITEM WHERE id = ?`, [id]).then((res) => true).catch((err) => false);
+        const deleteItem = await dao.run(`DELETE FROM ITEM WHERE id = ?`, [id]).then((res) => true).catch((err) => false);
+        const deleteUserToItem = await dao.run(`DELETE FROM USER_TO_ITEM WHERE itemId = ?`, [id]).then((res) => true).catch((err) => false);
+        return deleteItem && deleteUserToItem;
+    }
+
+    static async addUserToItem(itemId, userId) {
+        return dao.run('INSERT INTO USER_TO_ITEM (userId, itemId) VALUES (?,?)'
+            , [userId, itemId])
+            .then((res) => true).catch((err) => false);
     }
 }

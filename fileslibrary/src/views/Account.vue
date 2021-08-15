@@ -21,34 +21,6 @@
     <v-row justify="center" class="mt-5 mb-3">
       <h5 style="font-size: 1.5em">{{ `hello, ${getUserFullName}` }}</h5>
     </v-row>
-    <v-row>
-      <v-card width="100%" height="8vh">
-        <v-row>
-          <v-col cols="2"></v-col>
-          <v-col cols="8" class="ma-0 pt-2">
-            <v-card-title>
-              <v-text-field
-                v-model="search"
-                dense
-                append-icon="mdi-magnify"
-                label="Search"
-                single-line
-                hide-details
-              ></v-text-field>
-            </v-card-title>
-          </v-col>
-        </v-row>
-      </v-card>
-    </v-row>
-    <v-row class="pt-5">
-      <v-card width="100%">
-        <v-data-table
-          :headers="headers"
-          :items="desserts"
-          :search="search"
-        ></v-data-table>
-      </v-card>
-    </v-row>
   </v-container>
 </template>
 

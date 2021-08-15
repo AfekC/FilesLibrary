@@ -4,7 +4,6 @@
       <v-card-title class="justify-center">
         <span class="text-h5">create folder</span>
       </v-card-title>
-      <v-checkbox v-if="isLoggedIn" v-model="isPublic" label="public" class="ml-10" />
       <v-text-field label="folder name" v-model="fileName" class="ml-10 mr-10" />
       <v-card-actions class="justify-center">
         <v-btn
@@ -30,7 +29,6 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
-      isPublic: true,
       fileName: "",
     };
   },
@@ -42,7 +40,7 @@ export default {
       if (this.fileName.length > 0) {
         const formData = {
           name: this.fileName,
-          isPublic: this.isPublic,
+          isPublic: true,
           parentItem: this.getCurrentDirectoryId === -1 ? null : this.getCurrentDirectoryId,
           creator: this.getUserId,
         };

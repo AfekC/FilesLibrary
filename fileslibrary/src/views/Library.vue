@@ -4,7 +4,7 @@
       <v-card width="100%" height="7.5vh">
         <v-row>
           <v-col cols="5" class="mr-7">
-             <v-row  >
+             <v-row>
                 <v-icon @click="rollback()" class="ml-5 mt-6" style="height:3.5vh">mdi-arrow-up</v-icon>
                 <p v-if="parentsDirs.length > 5" class="pt-7" style="font-size:18px">...</p>
                 <v-icon v-if="parentsDirs.length > 5">mdi-chevron-right</v-icon>
@@ -63,6 +63,7 @@
             <UploadFiles
               v-if="uploadFilesDialog"
               :dialog.sync="uploadFilesDialog"
+              :users="users"
               @update="loadPage()"
             />
           </v-col>
@@ -116,6 +117,7 @@ import UploadFiles from "../components/UploadFiles.vue";
 import CreateFolder from "../components/CreateFolder.vue";
 import DeleteDialog from "../components/DeleteDialog.vue";
 import itemsAPI from "../API/itemsAPI.js";
+import usersAPI from "../API/usersAPI.js";
 
 export default {
   name: "Library",
@@ -138,15 +140,17 @@ export default {
       ],
       items: [],
       search: "",
+      users: [],
     };
   },
   async mounted() {
     await this.loadPage();
+    this.users = (await usersAPI.getUsers()).filter(user => user.id !== this.getUserId);
     this.setCurrentPageName(consts.PagesConst.PagesNames.LIBRARY_PAGE);
   },
   computed: {
     ...mapState(['parentsDirs']),
-    ...mapGetters(['getCurrentDirectoryId']),
+    ...mapGetters(['getCurrentDirectoryId', 'getUserId']),
     sortedItems() {
       return this.items.slice(0).sort((value) => {
         return value.isFile ? 1 : -1;
@@ -187,7 +191,7 @@ export default {
         return;
       }
       let s = size;
-      const d = ['KB', 'MB', 'GB'];
+      const d = ['B', 'KB', 'MB', 'GB'];
       let index = 0;
       while (s > 1024) {
         index++;

@@ -57,7 +57,7 @@ export default new Vuex.Store({
     getUserFullName: state => `${state.user.firstName || ''} ${state.user.lastName || ''}`,
     isLoggedIn: state => !!state.token,
     authStatus: state => state.status,
-    getUserId: (state, getters) => getters.isLoggedIn ? state.user.id : undefined,
+    getUserId: (state, getters) => getters.isLoggedIn ? state.user.id : null,
     getCurrentDirectoryId: state => state.parentsDirs.length > 0 ? state.parentsDirs[state.parentsDirs.length - 1].id : -1,
   },
   actions: {

@@ -39,6 +39,7 @@ export default class {
                 isFile          BOOLEAN,
                 parentItem      INTEGER,
                 creator         INTEGER,
+                data            BLOB,
                 CONSTRAINT fk_parent_item FOREIGN KEY (parentItem) REFERENCES ITEM(id) ON DELETE CASCADE,
                 CONSTRAINT fk_creator FOREIGN KEY (creator) REFERENCES USER(id) ON DELETE SET NULL
             ); `;

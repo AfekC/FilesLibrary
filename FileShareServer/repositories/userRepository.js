@@ -29,4 +29,8 @@ export default class {
         });
         await promise;
     }
+
+    static async getUsers() {
+        return dao.all(`SELECT id, username FROM USER`, []);
+    }
 }

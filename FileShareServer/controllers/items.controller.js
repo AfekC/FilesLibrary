@@ -1,38 +1,41 @@
 import repository from '../repositories/itemRepository';
 import conf from '../conf/conf.json'
-import { asyncForEach } from '../helpers/index.js'
+import { asyncForEach } from '../helpers'
 
 const fs = require('fs');
 
 export default class {
     static async getAllItems(req, res) {
         const currDirId = req.body.currDirId;
-        const items = await repository.getItemChiledsById(currDirId);
+        const items = await repository.getItemChiledsById(currDirId, req.userId);
         return res.send({ items });
     };
-
-    static async getFileByPath(req, res) {
-        const file = fs.readFileSync(conf.baseLibraryPath + '/' + req.params.path);
-        return res.send(file);
-    }
 
     static async addItem(req, res) {
         let isAllSuccess = true;
         await asyncForEach(req.files, async (file) => {
             const data = {
                 name: file.originalname,
-                isPublic: req.body.isPublic,
+                isPublic: JSON.parse(req.body.isPublic),
                 isFile: true,
-                size: file.size,
+                size: JSON.parse(file.size),
                 dateUploaded: (new Date()).getTime(),
-                parentItem: req.body.parentItem === 'null' ? null : req.body.parentItem,
-                creator: req.body.creator === 'undefined' ? undefined : req.body.creator,
+                parentItem: JSON.parse(req.body.parentItem),
+                creator: JSON.parse(req.body.creator),
+                data: file.data,
             };
-            const isItemExists = (await repository.getItemByNameAndParent(data.name, data.parentItem)).length > 0;
-            if (isItemExists) {
+            console.log(file);
+            const usersToShare = JSON.parse(req.body.usersToShare) + req.userId;
+            let item = await repository.getItemByNameAndParent(data.name, data.parentItem);
+            if (!!item) {
                 isAllSuccess = false;
             } else if (!await repository.addItem(data)) {
                 isAllSuccess = false;
+            } else if (!!req.userId && !data.isPublic) {
+                item = await repository.getItemByNameAndParent(data.name, data.parentItem);
+                await asyncForEach(usersToShare, async (userId) => {
+                    repository.addUserToItem(item.id, userId);
+                });
             }
         });
         if (isAllSuccess) {
@@ -46,13 +49,13 @@ export default class {
         }
     }
     static async newFolder(req, res) {
-        const isItemExists = (await repository.getItemByNameAndParent(req.body.name, req.body.parentItem)).length > 0;
-        if (isItemExists) {
+        const item = (await repository.getItemByNameAndParent(req.body.name, req.body.parentItem));
+        if (!!item) {
             return res.status(400).send({
                 message: 'item name is already exists'
             });
         }
-        var data = {
+        const data = {
             name: req.body.name,
             isPublic: req.body.isPublic,
             isFile: false,
@@ -73,7 +76,7 @@ export default class {
 
     static async deleteById(req, res) {
         const deleteFunction = async (id) => {
-            const item = await repository.getItemById(id);
+            const item = await repository.getItemById(id, req.userId);
             if (!item) return false;
 
             const childes = await repository.getItemChiledsById(id);

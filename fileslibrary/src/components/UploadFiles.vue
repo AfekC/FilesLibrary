@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" persistent width="40vw" style="height: 50vh">
+  <v-dialog v-model="dialog" persistent width="37vw" style="height: 50vh">
     <v-card :loading="loading" justify="center">
       <template slot="progress">
         <v-progress-linear
@@ -12,6 +12,16 @@
         <span class="text-h5">select your files</span>
       </v-card-title>
       <v-checkbox v-if="isLoggedIn" v-model="isPublic" label="public" class="pl-13" />
+      <v-col cols="11" class="pl-13">
+        <v-combobox
+            v-if="!isPublic"
+            v-model="selectedUsers"
+            :items="userNames"
+            label="Users to share with"
+            multiple
+            chips
+        ></v-combobox>
+      </v-col>
       <v-file-input
         v-model="files"
         width="30vw"
@@ -72,10 +82,12 @@ export default {
       isPublic: true,
       files: [],
       loading: false,
+      selectedUsers: [],
     };
   },
   props: {
     dialog: Boolean,
+    users: Array,
   },
   methods: {
     async uploadFiles() {
@@ -93,6 +105,10 @@ export default {
         formData.append("creator", this.getUserId);
         formData.append("parentItem", this.getCurrentDirectoryId === -1 ? null : this.getCurrentDirectoryId);
 
+          formData.append("usersToShare", JSON.stringify(this.selectedUsers.map((userName) => {
+            return this.users.find(user => user.userName === userName).id
+          })));
+
         const isSuccess = await itemsAPI.uploadFiles(formData);
         if (isSuccess) {
           Swal.fire("Success", "all files uploaded", "success");
@@ -109,6 +125,9 @@ export default {
   },
   computed: {
     ...mapGetters(['isLoggedIn', 'getUserId', 'getCurrentDirectoryId']),
+    userNames() {
+        return this.users.map(user => user.userName);
+    },
   },
 };
 </script>

@@ -84,7 +84,7 @@ export const getUserNameById = async (req, res) => {
         const username = await repository.getUsernameById(id)
         return res.json(username);
     } else {
-        res.status(404);
+        return res.status(404);
     }
 };
 
@@ -94,6 +94,11 @@ export const getUserByToken = async (req, res) => {
         return res.json({ user })
     } else {
         res.status(401);
-        res.json({ error: 'User not authenticated' });
+        return res.json({ error: 'User not authenticated' });
     }
+}
+
+export const getUsers = async (req, res) => {
+  const users = await repository.getUsers();
+  return res.json({ users });
 }
