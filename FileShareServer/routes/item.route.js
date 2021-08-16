@@ -4,9 +4,22 @@ import multer from 'multer';
 import conf from '../conf/conf.json';
 const router = express.Router()
 
-router.post("/", itemsController.getAllItems);
-router.post('/upload-files', multer({ dest: conf.tempPath }).array("files"), itemsController.addItem);
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, conf.baseLibraryPath)
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+        cb(null, '-' + uniqueSuffix + '-' + file.originalname)
+    }
+});
+
+const upload = multer({ storage: storage });
+
+router.post('/', itemsController.getAllItems);
+router.post('/upload-files', upload.any(), itemsController.addItem);
 router.post('/new_folder', itemsController.newFolder);
-router.post("/delete/:id", itemsController.deleteById);
+router.post('/delete/:id', itemsController.deleteById);
+router.get('/:id', itemsController.downloadItem)
 
 module.exports = router

@@ -95,7 +95,12 @@
               <td class="pa-0">
                 <v-icon v-if="!item.isPublic">mdi mdi-lock</v-icon>
               </td>
-              <td @click="deleteDialog = true" class="pa-0"><v-icon>mdi mdi-delete</v-icon></td>
+              <td class="pa-0">
+                <v-icon v-if="item.isFile" @click="download(item)">mdi mdi-download</v-icon>
+              </td>
+              <td class="pa-0">
+                <v-icon @click="deleteDialog = true">mdi mdi-delete</v-icon>
+              </td>
             </tr>
             <DeleteDialog
                 v-if="deleteDialog"
@@ -136,6 +141,7 @@ export default {
         { align: "center", sortable: false, text: "date modified", value: "date", width: "15%" },
         { align: "center", sortable: false, text: "last editor", value: "creator", width: "15%" },
         { align: "center", sortable: false, value: "isPublic", width: "4%" },
+        { align: "center", sortable: false, value: "download", width: "3%" },
         { align: "center", sortable: false, value: "trash", width: "3%" },
       ],
       items: [],
@@ -212,6 +218,9 @@ export default {
     loadPrevFolder(id) {
       this.rollDirToId(id);
       setTimeout(this.loadPage, 100);
+    },
+    download(item) {
+      itemsAPI.downloadItem(item);
     },
   },
 };

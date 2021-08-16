@@ -22,9 +22,8 @@ export default class {
                 dateUploaded: (new Date()).getTime(),
                 parentItem: JSON.parse(req.body.parentItem),
                 creator: JSON.parse(req.body.creator),
-                data: file.data,
+                path: file.path,
             };
-            console.log(file);
             const usersToShare = JSON.parse(req.body.usersToShare) + req.userId;
             let item = await repository.getItemByNameAndParent(data.name, data.parentItem);
             if (!!item) {
@@ -82,6 +81,14 @@ export default class {
             const childes = await repository.getItemChiledsById(id);
             if (!childes.every((item) => { return deleteFunction(item.id) })) return false;
 
+            if (!!item.serverPath) {
+                try {
+                    fs.unlinkSync(item.serverPath);
+                    //file removed
+                } catch(err) {
+                    console.error(err);
+                }
+            }
             return  await repository.deleteItem(id);
         };
 
@@ -93,4 +100,19 @@ export default class {
             message: 'Error while deleted!'
         });
     }
+
+    static async downloadItem(req, res) {
+        const id = req.params.id;
+        const item = await repository.getItemById(id, req.userId);
+        if (!item) {
+            return res.status(400).send({ message: 'ERROR'})
+        }
+        res.download(item.serverPath, item.name, (err) => {
+            if (err) {
+                res.status(500).send({
+                    message: "Could not download the file. " + err,
+                });
+            }
+        });
+    };
 }

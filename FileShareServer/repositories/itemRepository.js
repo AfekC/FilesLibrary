@@ -25,8 +25,8 @@ export default class {
     }
 
     static async addItem(data) {
-        return dao.run('INSERT INTO ITEM (name, isPublic, isFile, size, dateUploaded, parentItem, creator) VALUES (?,?,?,?,?,?,?)'
-            , [data.name, data.isPublic, data.isFile, data.size, data.dateUploaded, data.parentItem, data.creator])
+        return dao.run('INSERT INTO ITEM (name, isPublic, isFile, size, dateUploaded, parentItem, creator, serverPath) VALUES (?,?,?,?,?,?,?,?)'
+            , [data.name, data.isPublic, data.isFile, data.size, data.dateUploaded, data.parentItem, data.creator, data.path])
             .then((res) => true).catch((err) => false);
     }
 
@@ -38,7 +38,7 @@ export default class {
     }
 
     static async getItemById(itemId, userId) {
-        return await dao.all(`SELECT ITEM.* FROM ITEM 
+        return await dao.get(`SELECT ITEM.* FROM ITEM 
                                         LEFT JOIN USER_TO_ITEM ON ITEM.id = USER_TO_ITEM.itemId
                                     WHERE id = ? AND ( isPublic = true OR userId = ?)`, [itemId, userId]);
     }

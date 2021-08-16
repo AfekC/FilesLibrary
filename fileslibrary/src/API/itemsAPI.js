@@ -1,9 +1,10 @@
-import { post } from './baseAPI.js';
+import { post, download } from './baseAPI.js';
+const FileDownload = require('js-file-download');
 
 const uploadFiles = async (data) => {
     return await post('item/upload-files', data).then(() => {
         return true
-    }).catch((e) => {
+    }).catch(() => {
         return false;
     });
 };
@@ -11,7 +12,7 @@ const uploadFiles = async (data) => {
 const createFolder = async (data) => {
     return  await post('item/new_folder', data).then(() => {
         return true
-    }).catch((e) => {
+    }).catch(() => {
         return false;
     });
 };
@@ -31,11 +32,18 @@ const deleteItem = async (id) => {
         console.log(e);
         return false;
     });
-}
+};
+
+const downloadItem = async (item) => {
+    return await download(`item/${item.id}`).then((response) => {
+        FileDownload(response.data, item.name);
+    });
+};
 
 export default {
     uploadFiles,
     createFolder,
     getFilesByCurrentFolderId,
     deleteItem,
+    downloadItem,
 };
