@@ -1,16 +1,18 @@
 import axios from "axios";
 
+const origin = window.location.origin;
+
 export const post = (path, data) => {
-    return axios.post(`http://localhost:4000/${path}`, data)
+    return axios.post(origin + '/' + path, data)
 };
 
 export const get = (path) => {
-    return axios.get(`http://localhost:4000/${path}`);
+    return axios.get(origin + '/' + path);
 };
 
 export const download = (path) => {
     return axios({
-        url: `http://localhost:4000/${path}`,
+        url: origin + '/' + path,
         method: 'GET',
         responseType: 'blob',
     })

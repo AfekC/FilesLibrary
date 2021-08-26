@@ -31,6 +31,6 @@ export default class {
     }
 
     static async getUsers() {
-        return dao.all(`SELECT id, username FROM USER`, []);
+        return dao.all(`SELECT id, username FROM USER WHERE username != 'admin' `, []);
     }
 }

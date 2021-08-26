@@ -13,12 +13,11 @@ const decodeToken = (token) => {
 }
 
 export const authMiddleware = async (req, res, next) => {
-    const token = req.header('Access-Token');
-    if (!token) {
-        return next();
-    }
-
     try {
+        const token = req.header('Access-Token');
+        if (!token) {
+            return next();
+        }
         const decoded = decodeToken(token);
         const { userId } = decoded;
         const user = await repository.getUserById(userId)
@@ -26,6 +25,7 @@ export const authMiddleware = async (req, res, next) => {
             req.userId = userId;
         }
     } catch (e) {
+        console.log('failed');
         return next();
     }
     next();

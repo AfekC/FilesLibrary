@@ -1,5 +1,4 @@
 import repository from '../repositories/itemRepository';
-import conf from '../conf/conf.json'
 import { asyncForEach } from '../helpers'
 
 const fs = require('fs');
