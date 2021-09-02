@@ -118,9 +118,9 @@
 <script>
 import {mapState, mapGetters, mapMutations, mapActions} from "vuex";
 import consts from "../consts";
-import UploadFiles from "../components/UploadFiles.vue";
-import CreateFolder from "../components/CreateFolder.vue";
-import DeleteDialog from "../components/DeleteDialog.vue";
+import UploadFiles from "../components/library/UploadFiles.vue";
+import CreateFolder from "../components/library/CreateFolder.vue";
+import DeleteDialog from "../components/library/DeleteDialog.vue";
 import itemsAPI from "../API/itemsAPI.js";
 import usersAPI from "../API/usersAPI.js";
 

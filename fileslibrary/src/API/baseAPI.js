@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const origin = window.location.origin;
+const origin = 'http://'+window.location.hostname+':4000';
 
 export const post = (path, data) => {
     return axios.post(origin + '/' + path, data)

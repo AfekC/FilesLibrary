@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import itemsAPI from "../API/itemsAPI.js";
+import itemsAPI from "../../API/itemsAPI.js";
 import Swal from "sweetalert2";
 
 export default {

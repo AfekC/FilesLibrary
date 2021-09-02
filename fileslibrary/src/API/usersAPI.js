@@ -50,10 +50,30 @@ const getUsers = async () => {
     return data.users;
 };
 
+const updatePassword = async (oldPassword, newPassword) => {
+    return await post('user/update/password', {oldPassword, newPassword}).then(() => {
+        return true;
+    }).catch((e) => {
+        console.error("ERROR update password", e);
+        return e.response.status;
+    })
+}
+
+const updateUser = async (user) => {
+    return await post('user/update', { user }).then((res) => {
+        return res.data.user;
+    }).catch(() => {
+        console.error("ERROR update user");
+        return false;
+    });
+}
+
 export default {
     login,
     signin,
     getUserByToken,
     getUserNameById,
     getUsers,
+    updatePassword,
+    updateUser
 };

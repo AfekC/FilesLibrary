@@ -1,5 +1,7 @@
 import njwt from 'njwt';
 import repository from '../repositories/userRepository';
+import { asyncForEach } from "../helpers";
+
 const bcrypt = require('bcrypt');
 
 const { APP_SECRET = 'secret' } = process.env;
@@ -30,15 +32,6 @@ export const authMiddleware = async (req, res, next) => {
     }
     next();
 };
-
-export const authenticated = (req, res, next) => {
-    if (req.userId) {
-        return next();
-    }
-
-    res.status(401);
-    res.json({ error: 'User not authenticated' });
-}
 
 const returnInvalidCredentials = (res) => {
     res.status(401);
@@ -101,4 +94,50 @@ export const getUserByToken = async (req, res) => {
 export const getUsers = async (req, res) => {
   const users = await repository.getUsers();
   return res.json({ users });
+}
+
+export const updatePassword = async (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+    if (!!req.userId) {
+        try {
+            const user = await repository.getUserById(req.userId);
+            bcrypt.compare(oldPassword, user.password, async (err, result) => {
+                if (result) {
+                    const r = await repository.updatePassword(req.userId, newPassword)
+                    return res.json({r});
+                } else {
+                    return returnInvalidCredentials(res);
+                }
+            });
+        } catch (e) {
+            res.status(400);
+            console.log(e)
+            return res.json({ error: 'General Error' });
+        }
+    } else {
+        res.status(400);
+        return res.json({ error: 'User not authenticated' });
+    }
+}
+
+export const updateUser = async (req, res) => {
+    if (!!req.userId) {
+        try {
+            const user = await repository.getUserById(req.userId);
+            await asyncForEach(Object.keys(user), (key) => {
+                if (req.body.user[key]) {
+                    user[key] = req.body.user[key];
+                }
+            });
+            await repository.updateUser(req.userId, user);
+            return res.json({ user });
+        } catch (e) {
+            res.status(400);
+            console.log(e)
+            return res.json({ error: 'General Error' });
+        }
+    } else {
+        res.status(401);
+        return res.json({ error: 'User not authenticated' });
+    }
 }

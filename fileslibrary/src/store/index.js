@@ -4,6 +4,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 import usersAPI from "../API/usersAPI.js"
+import { smiley_b64 } from "../assets/defaultIcon";
 
 Vue.use(Vuex);
 
@@ -53,7 +54,7 @@ export default new Vuex.Store({
   getters: {
     isUserEmpty: state => Object.keys(state.user).length === 0,
     getUserName: state => state.user.userName || "visitor",
-    getUserImage: state => state.user.image || '@/assets/smiley.png',
+    getUserImage: state => state.user.image || smiley_b64,
     getUserFullName: state => `${state.user.firstName || ''} ${state.user.lastName || ''}`,
     isLoggedIn: state => !!state.token,
     authStatus: state => state.status,

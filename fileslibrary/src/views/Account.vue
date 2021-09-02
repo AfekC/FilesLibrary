@@ -4,31 +4,52 @@
       <v-col class="text-center" style="padding-top: 25vh">
         <h1 class="display-2 font-weight-bold">You Are Not Signed In</h1>
         <div style="padding-top: 5vh">
-          <v-btn @click.stop="logInDialog = true" class="ma-5"> LOG IN </v-btn>
-          <v-btn @click.stop="signInDialog = true" class="ma-5">
-            SIGN IN
-          </v-btn>
-          <LogIn :dialog.sync="logInDialog" />
-          <SignIn :dialog.sync="signInDialog" />
+          <v-btn @click.stop="logInDialog = true" class="ma-5"> LOG IN</v-btn>
+          <v-btn @click.stop="signInDialog = true" class="ma-5">SIGN IN</v-btn>
+          <LogIn :dialog.sync="logInDialog"/>
+          <SignIn :dialog.sync="signInDialog"/>
         </div>
       </v-col>
     </v-row>
   </v-container>
-  <v-container v-else>
-    <v-row class="text-center mt-7">
-      <v-img src="@/assets/smiley.png" contain height="100" weight="100" />
+  <v-container v-else class="mt-13">
+    <v-row justify="center">
+      <div style="position:relative">
+        <v-img :src="getUserImage"
+               contain
+               height="130"
+               weight="130"/>
+        <v-btn elevation="5"
+               fab
+               small
+               plain
+               style="position:absolute; bottom:-1vh; left:8.5vw; background-color: white"
+               @click.stop="uploadImageDialog = true">
+          <v-icon >mdi mdi-pencil</v-icon>
+          <UploadImage :dialog.sync="uploadImageDialog"/>
+        </v-btn>
+      </div>
     </v-row>
-    <v-row justify="center" class="mt-5 mb-3">
-      <h5 style="font-size: 1.5em">{{ `hello, ${getUserFullName}` }}</h5>
+    <v-row justify="center" class="mt-10">
+      <v-col cols="4">
+        <UpdateUser />
+      </v-col>
+    </v-row>
+    <v-row justify="center" class="pa-3">
+      <a @click.stop="changePasswordDialog = true"> change password </a>
+      <ChangePassword :dialog.sync="changePasswordDialog" />
     </v-row>
   </v-container>
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 import consts from "../consts";
-import SignIn from "../components/SingIn.vue";
-import LogIn from "../components/LogIn.vue";
+import SignIn from "../components/account/SingIn.vue";
+import LogIn from "../components/account/LogIn.vue";
+import UpdateUser from "../components/account/UpdateUser";
+import ChangePassword from "../components/account/ChangePassword";
+import UploadImage from "../components/account/UploadImage";
 
 export default {
   name: "Account",
@@ -36,40 +57,16 @@ export default {
     return {
       signInDialog: false,
       logInDialog: false,
-      search: "",
-      headers: [
-        {
-          text: "file\\directory",
-          align: "start",
-          filterable: true,
-          value: "name",
-        },
-        { text: "uploaded date", filterable: true, value: "time" },
-        { text: "attenders", value: "attenders" },
-        { text: "size (kb)", filterable: true, value: "size" },
-      ],
-      desserts: [
-        {
-          name: "a.txt",
-          time: Date.now().toString(),
-          attenders: ["Elia", "Noam"],
-          size: 24,
-        },
-        {
-          name: "folder 1",
-          time: Date.now().toString(),
-          attenders: [],
-          size: 1024,
-        },
-      ],
+      changePasswordDialog: false,
+      uploadImageDialog: false,
     };
   },
-  components: { SignIn, LogIn },
+  components: {UploadImage, ChangePassword, UpdateUser, SignIn, LogIn},
   mounted() {
     this.setCurrentPageName(consts.PagesConst.PagesNames.ACCOUNT_PAGE);
   },
   computed: {
-    ...mapGetters(["isLoggedIn", "getUserImage", "getUserFullName"]),
+    ...mapGetters(["isLoggedIn", "getUserImage"]),
   },
   methods: {
     ...mapMutations(["setCurrentPageName"]),
