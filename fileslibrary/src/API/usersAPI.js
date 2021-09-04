@@ -62,8 +62,17 @@ const updatePassword = async (oldPassword, newPassword) => {
 const updateUser = async (user) => {
     return await post('user/update', { user }).then((res) => {
         return res.data.user;
-    }).catch(() => {
-        console.error("ERROR update user");
+    }).catch((e) => {
+        console.error("ERROR update user", e);
+        return false;
+    });
+}
+
+const updateImage = async (image) => {
+    return await post('user/update/image', image).then(() => {
+        return true;
+    }).catch((e) => {
+        console.error("ERROR update image", e);
         return false;
     });
 }
@@ -75,5 +84,6 @@ export default {
     getUserNameById,
     getUsers,
     updatePassword,
-    updateUser
+    updateUser,
+    updateImage,
 };

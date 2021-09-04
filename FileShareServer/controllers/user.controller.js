@@ -27,7 +27,7 @@ export const authMiddleware = async (req, res, next) => {
             req.userId = userId;
         }
     } catch (e) {
-        console.log('failed');
+        console.log(e);
         return next();
     }
     next();
@@ -131,6 +131,22 @@ export const updateUser = async (req, res) => {
             });
             await repository.updateUser(req.userId, user);
             return res.json({ user });
+        } catch (e) {
+            res.status(400);
+            console.log(e)
+            return res.json({ error: 'General Error' });
+        }
+    } else {
+        res.status(401);
+        return res.json({ error: 'User not authenticated' });
+    }
+}
+
+export const updateImage = async (req, res) => {
+    if (!!req.userId) {
+        try {
+            await repository.updateImage(req.userId, req.file)
+            return res.json({ });
         } catch (e) {
             res.status(400);
             console.log(e)

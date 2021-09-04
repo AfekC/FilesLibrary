@@ -17,8 +17,11 @@
       <div style="position:relative">
         <v-img :src="getUserImage"
                contain
-               height="130"
-               weight="130"/>
+               height="10vw"
+               weight="10vw"
+               max-width="10vw"
+               max-height="10vw"
+        class="rounded-circle"/>
         <v-btn elevation="5"
                fab
                small

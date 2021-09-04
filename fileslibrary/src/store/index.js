@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import axios from "axios";
 import Swal from "sweetalert2";
+import fileType from "file-type";
 
 import usersAPI from "../API/usersAPI.js"
 import { smiley_b64 } from "../assets/defaultIcon";
@@ -19,6 +20,9 @@ export default new Vuex.Store({
   mutations: {
     setUser(state, user) {
       state.user = user || {};
+    },
+    setUserImage(state, image) {
+      Vue.set(state.user, "image", image);
     },
     setCurrentPageName(state, pageName) {
       state.currentPageName = pageName;
@@ -62,6 +66,23 @@ export default new Vuex.Store({
     getCurrentDirectoryId: state => state.parentsDirs.length > 0 ? state.parentsDirs[state.parentsDirs.length - 1].id : -1,
   },
   actions: {
+    async setUser({ commit }, user) {
+      console.log(user);
+      if (user.image) {
+        let binary = '';
+        const bytes = new Uint8Array( user.image.data );
+        const len = bytes.byteLength;
+        for (let i = 0; i < len; i++) {
+          binary += String.fromCharCode( bytes[ i ] );
+        }
+        const base64string = window.btoa( binary );
+
+        const { mime } = await fileType.fromBuffer(Buffer.from(base64string, "base64"));
+
+        user.image = `data:${mime};base64,${base64string}`;
+      }
+      commit('setUser', user);
+    },
     async login({ commit }, formData) {
       commit('auth_request')
       const isSeccessful = await usersAPI.login(formData, (res) => {

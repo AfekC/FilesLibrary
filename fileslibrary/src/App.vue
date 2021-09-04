@@ -9,15 +9,14 @@
 
 <script>
 import NavBar from "./components/NavBar";
-import { mapActions, mapGetters, mapMutations } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import usersAPI from "./API/usersAPI.js";
 
 export default {
   name: "App",
   components: { NavBar },
   methods: {
-    ...mapActions(["logout", "logout"]),
-    ...mapMutations(["setUser"]),
+    ...mapActions(["logout", "logout", "setUser"]),
   },
   computed: {
     ...mapGetters(["isLoggedIn", "isUserEmpty"]),

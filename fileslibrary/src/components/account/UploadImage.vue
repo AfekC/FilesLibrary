@@ -5,6 +5,11 @@
         <span class="text-h5">Upload Image</span>
       </v-card-title>
       <v-card-text>
+        <v-img v-if="fileInB64"
+              :src="fileInB64"
+               contain
+               height="130"
+               weight="130"/>
         <v-file-input
             v-model="file"
             accept="image/png, image/jpeg, image/bmp"
@@ -25,9 +30,9 @@
             :disabled="!file"
             color="blue darken-1"
             text
-            @click.stop=""
+            @click.stop="saveImage()"
         >
-          Next
+          Save
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -35,7 +40,7 @@
 </template>
 
 <script>
-import {mapMutations, mapState} from "vuex";
+import {mapMutations} from "vuex";
 import usersAPI from "../../API/usersAPI";
 import Swal from "sweetalert2";
 
@@ -47,16 +52,31 @@ export default {
   data() {
     return {
       file: null,
+      fileInB64: null,
     };
   },
-  computed: {
-    ...mapState(["user"]),
+  watch: {
+    async file() {
+      if (this.file) {
+        this.fileInB64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(this.file);
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = error => reject(error);
+        });
+      } else {
+        this.fileInB64 = null;
+      }
+    },
   },
   methods: {
-    ...mapMutations(["setUser"]),
-    async saveUser() {
-      const user = await usersAPI.updateUser(updatedFields);
-      if (user) {
+    ...mapMutations(["setUserImage"]),
+    async saveImage() {
+      let formData = new FormData();
+      formData.append("image", this.file, this.file.name);
+      if (await usersAPI.updateImage(formData)) {
+        this.setUserImage(this.fileInB64);
+        this.$emit('update:dialog', false);
         Swal.fire("Success", "User Updated Successfully", "success");
       } else {
         Swal.fire("Error", "Error Update User", "error");

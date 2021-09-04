@@ -16,8 +16,8 @@ export default class {
                 firstName TEXT,
                 lastName  TEXT,
                 userName  TEXT UNIQUE,
-                image      BLOB,
-                password text NOT NULL
+                image     BLOB,
+                password  TEXT NOT NULL
             );`;
             db.run(createUsersTable, [], function (err) {
                 if (err) {
@@ -69,6 +69,7 @@ export default class {
                 if (error) {
                     return rej(error.message);
                 }
+                console.log(result)
                 return res(result);
             });
         })

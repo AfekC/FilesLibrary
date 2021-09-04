@@ -1,6 +1,7 @@
 import dao from './dao';
 const bcrypt = require('bcrypt');
 const conf = require("../conf/conf.json");
+const Blob = require('node-blob');
 
 export default class {
 
@@ -45,11 +46,15 @@ export default class {
     }
 
     static async updateUser(id, user) {
-        const { firstName, lastName, userName, image } = user;
+        const { firstName, lastName, userName } = user;
 
-        var sql = 'UPDATE USER SET firstName=?,lastName=?,userName=?,image=? WHERE id = ?';
-        var params = [firstName, lastName, userName, image, id];
+        var sql = 'UPDATE USER SET firstName=?,lastName=?,userName=? WHERE id = ?';
+        var params = [firstName, lastName, userName, id];
 
         return dao.all(sql, params);
+    }
+
+    static async updateImage(id, image) {
+        return dao.all('UPDATE USER SET image=? WHERE id = ?', [image.buffer, id]);
     }
 }
