@@ -13,13 +13,13 @@ import { mapActions, mapGetters } from "vuex";
 import usersAPI from "./API/usersAPI.js";
 
 export default {
-  name: "App",
+  name: 'App',
   components: { NavBar },
   methods: {
-    ...mapActions(["logout", "logout", "setUser"]),
+    ...mapActions(['logout', 'logout', 'setUser']),
   },
   computed: {
-    ...mapGetters(["isLoggedIn", "isUserEmpty"]),
+    ...mapGetters(['isLoggedIn', 'isUserEmpty']),
   },
   async created() {
     if (this.isLoggedIn && this.isUserEmpty) {

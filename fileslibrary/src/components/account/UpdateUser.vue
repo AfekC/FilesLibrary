@@ -59,7 +59,7 @@ import Swal from "sweetalert2";
 import rules from "../../consts/rules";
 
 export default {
-  name: "UpdateUser",
+  name: 'UpdateUser',
   data() {
     return {
       fields: [{ title: "firstName", isEdit: false, ruleName: "nameRules", value:"" }, { title: "lastName", isEdit: false, ruleName: "nameRules", value:"" }, { title: "userName", isEdit: false, ruleName: "userNameRules", value:"" }],
@@ -67,7 +67,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["user"]),
+    ...mapState(['user']),
     isAnyFiledEdited() {
       return this.fields.some((field) => field.isEdit);
     },
@@ -76,7 +76,7 @@ export default {
     },
   },
   methods: {
-    ...mapMutations(["setUser"]),
+    ...mapMutations(['setUser']),
     async saveUser() {
       const updatedFields = {};
       this.fields.forEach((field) => {

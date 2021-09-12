@@ -18,10 +18,10 @@ const folderName = conf.baseLibraryPath;
 
 try {
   if (!fs.existsSync(folderName)) {
-    fs.mkdirSync(folderName)
+    fs.mkdirSync(folderName);
   }
 } catch (err) {
-  console.error(err)
+  console.error(err);
 }
 
 console.log('local ip:');
@@ -30,10 +30,8 @@ console.log(getLocalIP());
 const port = process.env.PORT || conf.api.port || 4000;
 export const app = express();
 
-// Create port
-
-app.use(cors());
 // Setting up port with express js
+app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '../fileslibrary/dist')));
 app.use(authMiddleware);
@@ -42,8 +40,6 @@ app.use(session({ secret: "super secret string" }));
 
 //  Script to setup sqlite DB in memory //
 dao.setupDbForDev();
-////////////////////////////////////
-
 
 app.use('/user', userRoutes);
 app.use('/item', itemRoutes);

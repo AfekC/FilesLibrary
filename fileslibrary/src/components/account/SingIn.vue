@@ -91,7 +91,7 @@ export default {
     dialog: Boolean,
   },
   methods: {
-    ...mapActions(["signin"]),
+    ...mapActions(['signin']),
     saveUser() {
       if (this.isValidate) {
         const formData = {

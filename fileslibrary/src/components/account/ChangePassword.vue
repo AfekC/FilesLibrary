@@ -68,7 +68,7 @@ import usersAPI from "../../API/usersAPI";
 import Swal from "sweetalert2";
 
 export default {
-  name: "ChangePassword",
+  name: 'ChangePassword',
   props: {
     dialog: Boolean,
   },

@@ -4,7 +4,7 @@ import multer from "multer";
 const router = express.Router();
 
 
-var upload = multer({
+const upload = multer({
     fileFilter: (req, file, cb) => {
         if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
             cb(null, true);

@@ -145,11 +145,11 @@ export const updateUser = async (req, res) => {
 export const updateImage = async (req, res) => {
     if (!!req.userId) {
         try {
-            await repository.updateImage(req.userId, req.file)
+            await repository.updateImage(req.userId, req.file);
             return res.json({ });
         } catch (e) {
             res.status(400);
-            console.log(e)
+            console.log(e);
             return res.json({ error: 'General Error' });
         }
     } else {

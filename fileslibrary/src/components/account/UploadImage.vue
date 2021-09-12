@@ -70,7 +70,7 @@ export default {
     },
   },
   methods: {
-    ...mapMutations(["setUserImage"]),
+    ...mapMutations(['setUserImage']),
     async saveImage() {
       let formData = new FormData();
       formData.append("image", this.file, this.file.name);

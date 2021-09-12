@@ -81,11 +81,11 @@ export default {
     };
   },
   computed: {
-    ...mapState(["currentPageName"]),
-    ...mapGetters(["getUserName", "isLoggedIn"]),
+    ...mapState(['currentPageName']),
+    ...mapGetters(['getUserName', 'isLoggedIn']),
   },
   methods: {
-    ...mapActions(["logout"]),
+    ...mapActions(['logout']),
     logOutFunction() {
       this.dialog = false;
       this.logout();

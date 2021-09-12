@@ -58,7 +58,7 @@ export default {
     dialog: Boolean,
   },
   methods: {
-    ...mapActions(["login"]),
+    ...mapActions(['login']),
     logIn() {
       if (this.login({ userName: this.userName, password: this.password })) {
         this.$emit("update:dialog", false);

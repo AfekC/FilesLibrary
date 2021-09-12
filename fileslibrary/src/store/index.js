@@ -28,20 +28,20 @@ export default new Vuex.Store({
       state.currentPageName = pageName;
     },
     auth_request(state) {
-      state.status = 'loading'
+      state.status = 'loading';
     },
     auth_success(state, { token, user }) {
-      state.status = 'success'
-      state.token = token
-      state.user = user
+      state.status = 'success';
+      state.token = token;
+      state.user = user;
     },
     auth_error(state) {
-      state.status = 'error'
+      state.status = 'error';
     },
     logout(state) {
       state.user = {};
-      state.status = ''
-      state.token = ''
+      state.status = '';
+      state.token = '';
     },
     setParentsDirsIds(state, parents) {
       state.parentsDirs = parents;
@@ -84,49 +84,49 @@ export default new Vuex.Store({
       commit('setUser', user);
     },
     async login({ commit }, formData) {
-      commit('auth_request')
+      commit('auth_request');
       const isSeccessful = await usersAPI.login(formData, (res) => {
-        const token = res.data.accessToken
-        const user = res.data.user
-        localStorage.setItem('token', token)
-        axios.defaults.headers.common['Access-Token'] = token
-        commit('auth_success', { token, user })
+        const token = res.data.accessToken;
+        const user = res.data.user;
+        localStorage.setItem('token', token);
+        axios.defaults.headers.common['Access-Token'] = token;
+        commit('auth_success', { token, user });
       });
       if (isSeccessful) {
         Swal.fire("Success", "you logded in", "success");
         return true;
       } else {
-        commit('auth_error')
-        localStorage.removeItem('token')
+        commit('auth_error');
+        localStorage.removeItem('token');
         Swal.fire("Error", "wrong input", "error");
         return false;
       }
     },
     async signin({ commit }, formData) {
-      commit('auth_request')
+      commit('auth_request');
       const isSeccessful = await usersAPI.signin(formData, (res) => {
-        const token = res.data.accessToken
-        const user = res.data.user
-        localStorage.setItem('token', token)
-        axios.defaults.headers.common['Access-Token'] = token
-        commit('auth_success', { token, user })
+        const token = res.data.accessToken;
+        const user = res.data.user;
+        localStorage.setItem('token', token);
+        axios.defaults.headers.common['Access-Token'] = token;
+        commit('auth_success', { token, user });
       });
       if (isSeccessful) {
         Swal.fire("Success", "you signed in", "success");
         return true;
       } else {
-        commit('auth_error')
-        localStorage.removeItem('token')
+        commit('auth_error');
+        localStorage.removeItem('token');
         Swal.fire("Error", "wrong input", "error");
         return false;
       }
     },
     logout({ commit }) {
       return new Promise((resolve) => {
-        commit('logout')
-        localStorage.removeItem('token')
-        delete axios.defaults.headers.common['Authorization']
-        resolve()
+        commit('logout');
+        localStorage.removeItem('token');
+        delete axios.defaults.headers.common['Authorization'];
+        resolve();
       })
     },
     rollDirToId({ state, commit, getters }, id) {

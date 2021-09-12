@@ -69,10 +69,10 @@ export default {
     this.setCurrentPageName(consts.PagesConst.PagesNames.ACCOUNT_PAGE);
   },
   computed: {
-    ...mapGetters(["isLoggedIn", "getUserImage"]),
+    ...mapGetters(['isLoggedIn', 'getUserImage']),
   },
   methods: {
-    ...mapMutations(["setCurrentPageName"]),
+    ...mapMutations(['setCurrentPageName']),
   },
 };
 </script>
