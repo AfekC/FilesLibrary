@@ -3,7 +3,7 @@
     <v-row>
       <v-card width="100%" height="7.5vh">
         <v-row>
-          <v-col cols="5" class="mr-7">
+          <v-col cols="6">
              <v-row>
                 <v-icon @click="rollback()" class="ml-5 mt-6" style="height:3.5vh">mdi-arrow-up</v-icon>
                 <p v-if="parentsDirs.length > 5" class="pt-7" style="font-size:18px">...</p>
@@ -24,7 +24,7 @@
                 </v-breadcrumbs>
              </v-row>
           </v-col>
-          <v-col cols="2" class="pa-0 pt-5 pl-3 mr-4 ml-13">
+          <v-col cols="2" class="pa-0 pt-5 pl-3">
             <v-card-title class="pa-0">
               <v-text-field
                   v-model="search"
@@ -99,18 +99,18 @@
                 <v-icon v-if="item.isFile" @click="download(item)">mdi mdi-download</v-icon>
               </td>
               <td class="pa-0">
-                <v-icon @click="deleteDialog = true">mdi mdi-delete</v-icon>
+                <v-icon @click="deletePressed(item)">mdi mdi-delete</v-icon>
               </td>
             </tr>
+          </template>
+        </v-data-table>
             <DeleteDialog
                 v-if="deleteDialog"
-                :id="item.id"
-                :name="item.name"
+                :id="pressedItem.id"
+                :name="pressedItem.name"
                 :dialog.sync="deleteDialog"
                 @update="loadPage()"
             />
-          </template>
-        </v-data-table>
       </v-card>
     </v-row>
   </v-container>
@@ -123,6 +123,7 @@ import CreateFolder from "../components/library/CreateFolder.vue";
 import DeleteDialog from "../components/library/DeleteDialog.vue";
 import itemsAPI from "../API/itemsAPI.js";
 import usersAPI from "../API/usersAPI.js";
+import Swal from "sweetalert2";
 
 export default {
   name: "Library",
@@ -147,6 +148,7 @@ export default {
       items: [],
       search: "",
       users: [],
+      pressedItem: {},
     };
   },
   async mounted() {
@@ -164,7 +166,7 @@ export default {
     },
     breadcrumbs() {
       const l = this.parentsDirs.length;
-      return l > 5 ? this.parentsDirs.slice(l-5, l) : this.parentsDirs;
+      return l > 4 ? this.parentsDirs.slice(l-4, l) : this.parentsDirs;
     },
     shortName() {
       return (name) => {
@@ -220,8 +222,14 @@ export default {
       setTimeout(this.loadPage, 100);
     },
     download(item) {
-      itemsAPI.downloadItem(item);
+      if (!itemsAPI.downloadItem(item)) {
+        Swal.fire("Error", "error downloading item", "error");
+      }
     },
+    deletePressed(item) {
+      this.pressedItem = item;
+      this.deleteDialog = true;
+    }
   },
 };
 </script>

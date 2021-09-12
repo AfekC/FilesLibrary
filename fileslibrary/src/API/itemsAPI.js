@@ -37,6 +37,10 @@ const deleteItem = async (id) => {
 const downloadItem = async (item) => {
     return await download(`item/${item.id}`).then((response) => {
         FileDownload(response.data, item.name);
+        return true;
+    }).catch((e) => {
+        console.error(e);
+        return false;
     });
 };
 

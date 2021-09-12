@@ -108,6 +108,7 @@ export default class {
         }
         res.download(item.serverPath, item.name, (err) => {
             if (err) {
+                console.error(err);
                 res.status(500).send({
                     message: "Could not download the file. " + err,
                 });

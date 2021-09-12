@@ -69,7 +69,6 @@ export default class {
                 if (error) {
                     return rej(error.message);
                 }
-                console.log(result)
                 return res(result);
             });
         })

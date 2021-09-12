@@ -14,27 +14,27 @@
   </v-container>
   <v-container v-else class="mt-13">
     <v-row justify="center">
-      <div style="position:relative">
-        <v-img :src="getUserImage"
+      <v-col cols="4" md="2">
+        <div style="position:relative">
+          <v-img :src="getUserImage"
                contain
-               height="10vw"
-               weight="10vw"
-               max-width="10vw"
-               max-height="10vw"
-        class="rounded-circle"/>
-        <v-btn elevation="5"
+               height="15vh"
+               weight="100%"
+               style="border-radius: 50%"/>
+          <v-btn elevation="5"
                fab
                small
                plain
                style="position:absolute; bottom:-1vh; left:8.5vw; background-color: white"
                @click.stop="uploadImageDialog = true">
-          <v-icon >mdi mdi-pencil</v-icon>
-          <UploadImage :dialog.sync="uploadImageDialog"/>
-        </v-btn>
-      </div>
+            <v-icon >mdi mdi-pencil</v-icon>
+            <UploadImage :dialog.sync="uploadImageDialog"/>
+          </v-btn>
+        </div>
+      </v-col>
     </v-row>
     <v-row justify="center" class="mt-10">
-      <v-col cols="4">
+      <v-col cols="10" md="4">
         <UpdateUser />
       </v-col>
     </v-row>
