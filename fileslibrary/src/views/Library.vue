@@ -49,6 +49,7 @@
             <CreateFolder
               v-if="createFolderDialog"
               :dialog.sync="createFolderDialog"
+              :users="users"
               @update="loadPage()"
             />
             <v-btn

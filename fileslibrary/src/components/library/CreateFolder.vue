@@ -4,6 +4,17 @@
       <v-card-title class="justify-center">
         <span class="text-h5">create folder</span>
       </v-card-title>
+      <v-checkbox v-if="isLoggedIn" v-model="isPublic" label="public" class="pl-13" />
+      <v-col cols="11" class="pl-13">
+        <v-combobox
+            v-if="!isPublic"
+            v-model="selectedUsers"
+            :items="userNames"
+            label="Users to share with"
+            multiple
+            chips
+        ></v-combobox>
+      </v-col>
       <v-text-field label="folder name" v-model="fileName" class="ml-10 mr-10" />
       <v-card-actions class="justify-center">
         <v-btn
@@ -30,19 +41,25 @@ export default {
   data() {
     return {
       fileName: "",
+      isPublic: true,
+      selectedUsers: [],
     };
   },
   props: {
     dialog: Boolean,
+    users: Array,
   },
   methods: {
     async createFolder() {
       if (this.fileName.length > 0) {
         const formData = {
           name: this.fileName,
-          isPublic: true,
+          isPublic: this.isPublic,
           parentItem: this.getCurrentDirectoryId === -1 ? null : this.getCurrentDirectoryId,
           creator: this.getUserId,
+          usersToShare: this.selectedUsers.map((userName) => {
+            return this.users.find(user => user.userName === userName).id;
+          }),
         };
         const isSuccessful = await itemsAPI.createFolder(formData);
         if (isSuccessful) {
@@ -59,6 +76,9 @@ export default {
   },
   computed: {
     ...mapGetters(['isLoggedIn', 'getUserId', 'getCurrentDirectoryId']),
+    userNames() {
+      return this.users.map(user => user.userName);
+    },
   },
 };
 </script>

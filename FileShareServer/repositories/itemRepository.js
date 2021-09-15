@@ -43,6 +43,20 @@ export default class {
                                     WHERE id = ? AND ( isPublic = true OR userId = ?)`, [itemId, userId]);
     }
 
+    static async getItemCreator(itemId) {
+        return await dao.get(`SELECT ITEM.creator FROM ITEM 
+                                    WHERE id = ?`, [itemId]);
+    }
+
+    static async removeItemAccess(itemId) {
+        return await dao.run(`DELETE * FROM USER_TO_ITEM
+                                    WHERE itemId = ?`, [itemId]);
+    }
+
+    static async updateItemPublicField(itemId, isPublic) {
+        return await dao.run(`UPDATE ITEM SET isPublic=? WHERE itemId = ?`, [itemId, isPublic]);
+    }
+
     static async deleteItem(id) {
         const deleteItem = await dao.run(`DELETE FROM ITEM WHERE id = ?`, [id]).then((res) => true).catch((err) => false);
         const deleteUserToItem = await dao.run(`DELETE FROM USER_TO_ITEM WHERE itemId = ?`, [id]).then((res) => true).catch((err) => false);

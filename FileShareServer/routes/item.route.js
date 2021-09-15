@@ -20,6 +20,7 @@ router.post('/', itemsController.getAllItems);
 router.post('/upload-files', upload.any(), itemsController.addItem);
 router.post('/new_folder', itemsController.newFolder);
 router.post('/delete/:id', itemsController.deleteById);
+router.post('/changeItemAccess', itemsController.changeItemAccess);
 router.get('/:id', itemsController.downloadItem)
 
 module.exports = router

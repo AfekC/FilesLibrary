@@ -105,9 +105,9 @@ export default {
         formData.append("creator", this.getUserId);
         formData.append("parentItem", this.getCurrentDirectoryId === -1 ? null : this.getCurrentDirectoryId);
 
-          formData.append("usersToShare", JSON.stringify(this.selectedUsers.map((userName) => {
-            return this.users.find(user => user.userName === userName).id;
-          })));
+        formData.append("usersToShare", JSON.stringify(this.selectedUsers.map((userName) => {
+          return this.users.find(user => user.userName === userName).id;
+        })));
 
         const isSuccess = await itemsAPI.uploadFiles(formData);
         if (isSuccess) {

@@ -46,9 +46,9 @@ export default class {
             });
         }
     }
+
     static async newFolder(req, res) {
-        const item = (await repository.getItemByNameAndParent(req.body.name, req.body.parentItem));
-        if (!!item) {
+        if (!!(await repository.getItemByNameAndParent(req.body.name, req.body.parentItem))) {
             return res.status(400).send({
                 message: 'item name is already exists'
             });
@@ -62,12 +62,38 @@ export default class {
             creator: req.body.creator,
         };
         if (await repository.addItem(data)) {
+            if (!req.body.isPublic) {
+                const usersToShare = req.body.usersToShare + req.userId;
+                const item = await repository.getItemByNameAndParent(data.name, data.parentItem);
+                await asyncForEach(usersToShare, async (userId) => {
+                    repository.addUserToItem(item.id, userId);
+                });
+            }
             return res.json({
                 message: "success",
             });
         } else {
             res.status(400).send({
                 message: 'This is an error!'
+            });
+        }
+    }
+
+    static async changeItemAccess(req, res) {
+        const itemId = req.body.itemId;
+        if ((await repository.getItemCreator(itemId))[0] === req.userId) {
+            await repository.removeItemAccess(itemId);
+            const isPublic = JSON.parse(req.body.isPublic);
+            repository.updateItemPublicField(itemId, isPublic);
+            if (!isPublic) {
+                const usersToShare = JSON.parse(req.body.usersToShare) + req.userId;
+                await asyncForEach(usersToShare, async (userId) => {
+                    repository.addUserToItem(itemId, userId);
+                });
+            }
+        } else {
+            return res.status(400).send({
+                message: 'item not found'
             });
         }
     }
