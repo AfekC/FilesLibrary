@@ -30,10 +30,9 @@ export default new Vuex.Store({
     auth_request(state) {
       state.status = 'loading'
     },
-    auth_success(state, { token, user }) {
+    auth_success(state, token) {
       state.status = 'success'
       state.token = token
-      state.user = user
     },
     auth_error(state) {
       state.status = 'error'
@@ -58,7 +57,9 @@ export default new Vuex.Store({
   getters: {
     isUserEmpty: state => Object.keys(state.user).length === 0,
     getUserName: state => state.user.userName || "visitor",
-    getUserImage: state => state.user.image || smiley_b64,
+    getUserImage: state => {
+      return state.user.image || smiley_b64
+    },
     getUserFullName: state => `${state.user.firstName || ''} ${state.user.lastName || ''}`,
     isLoggedIn: state => !!state.token,
     authStatus: state => state.status,
@@ -67,7 +68,6 @@ export default new Vuex.Store({
   },
   actions: {
     async setUser({ commit }, user) {
-      console.log(user);
       if (user.image) {
         let binary = '';
         const bytes = new Uint8Array( user.image.data );
@@ -83,14 +83,18 @@ export default new Vuex.Store({
       }
       commit('setUser', user);
     },
-    async login({ commit }, formData) {
+    authSuccess({commit, dispatch}, { token, user}) {
+      dispatch('setUser', user);
+      commit('auth_success', token);
+    },
+    async login({ commit, dispatch }, formData) {
       commit('auth_request')
       const isSeccessful = await usersAPI.login(formData, (res) => {
         const token = res.data.accessToken
         const user = res.data.user
         localStorage.setItem('token', token)
         axios.defaults.headers.common['Access-Token'] = token
-        commit('auth_success', { token, user })
+        dispatch('authSuccess', { token, user })
       });
       if (isSeccessful) {
         Swal.fire("Success", "you logded in", "success");
@@ -102,14 +106,14 @@ export default new Vuex.Store({
         return false;
       }
     },
-    async signin({ commit }, formData) {
+    async signin({ commit, dispatch }, formData) {
       commit('auth_request')
       const isSeccessful = await usersAPI.signin(formData, (res) => {
         const token = res.data.accessToken
         const user = res.data.user
         localStorage.setItem('token', token)
         axios.defaults.headers.common['Access-Token'] = token
-        commit('auth_success', { token, user })
+        dispatch('authSuccess', { token, user })
       });
       if (isSeccessful) {
         Swal.fire("Success", "you signed in", "success");
