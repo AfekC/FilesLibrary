@@ -63,7 +63,7 @@ export default class {
         };
         if (await repository.addItem(data)) {
             if (!req.body.isPublic) {
-                const usersToShare = req.body.usersToShare + req.userId;
+                const usersToShare = [...req.body.usersToShare, req.userId];
                 const item = await repository.getItemByNameAndParent(data.name, data.parentItem);
                 await asyncForEach(usersToShare, async (userId) => {
                     repository.addUserToItem(item.id, userId);
@@ -81,12 +81,12 @@ export default class {
 
     static async changeItemAccess(req, res) {
         const itemId = req.body.itemId;
-        if ((await repository.getItemCreator(itemId))[0] === req.userId) {
+        if ((await repository.getItemCreator(itemId)).creator === req.userId) {
             await repository.removeItemAccess(itemId);
             const isPublic = JSON.parse(req.body.isPublic);
             repository.updateItemPublicField(itemId, isPublic);
             if (!isPublic) {
-                const usersToShare = JSON.parse(req.body.usersToShare) + req.userId;
+                const usersToShare = [...req.body.usersToShare, req.userId];
                 await asyncForEach(usersToShare, async (userId) => {
                     repository.addUserToItem(itemId, userId);
                 });
@@ -96,6 +96,9 @@ export default class {
                 message: 'item not found'
             });
         }
+        return res.json({
+            message: "success",
+        });
     }
 
     static async deleteById(req, res) {
@@ -141,4 +144,13 @@ export default class {
             }
         });
     };
+
+    static async getItemUsers(req, res) {
+        const id = req.params.id;
+        const itemUsers = (await repository.getItemUsers(id)).map(row => row.userId);
+        if (itemUsers) {
+            return res.json(itemUsers);
+        }
+        return res.status(400).send({message: "General error"});
+    }
 }

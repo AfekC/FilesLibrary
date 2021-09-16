@@ -49,12 +49,11 @@ export default class {
     }
 
     static async removeItemAccess(itemId) {
-        return await dao.run(`DELETE * FROM USER_TO_ITEM
-                                    WHERE itemId = ?`, [itemId]);
+        return await dao.run(`DELETE FROM USER_TO_ITEM WHERE itemId = ?`, [itemId]);
     }
 
     static async updateItemPublicField(itemId, isPublic) {
-        return await dao.run(`UPDATE ITEM SET isPublic=? WHERE itemId = ?`, [itemId, isPublic]);
+        return await dao.run(`UPDATE ITEM SET isPublic=? WHERE id = ?`, [isPublic, itemId]);
     }
 
     static async deleteItem(id) {
@@ -68,4 +67,8 @@ export default class {
             , [userId, itemId])
             .then((res) => true).catch((err) => false);
     }
+
+    static async getItemUsers(itemId) {
+        return dao.all(`SELECT userID FROM USER_TO_ITEM WHERE itemId = ?`, [itemId]);
+    };
 }

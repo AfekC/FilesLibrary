@@ -1,4 +1,4 @@
-import { post, download } from './baseAPI.js';
+import { get, post, download } from './baseAPI.js';
 const FileDownload = require('js-file-download');
 
 const uploadFiles = async (data) => {
@@ -44,10 +44,30 @@ const downloadItem = async (item) => {
     });
 };
 
+const changeItemAccess = async (data) => {
+    return await post(`item/changeItemAccess`, data).then(() => {
+        return true
+    }).catch((e) => {
+        console.log(e);
+        return false;
+    });
+};
+
+const getItemUsers = async (id) => {
+    return await get(`item/getItemUsers/${id}`).then(({data}) => {
+        return data;
+    }).catch((e) => {
+        console.log(e);
+        return false;
+    });
+};
+
 export default {
     uploadFiles,
     createFolder,
     getFilesByCurrentFolderId,
     deleteItem,
     downloadItem,
+    changeItemAccess,
+    getItemUsers,
 };

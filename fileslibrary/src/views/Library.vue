@@ -94,7 +94,19 @@
               <td style="text-align:center; white-space: pre-wrap">{{ getDate(item.dateUploaded) }}</td>
               <td style="text-align:center">{{ item.creatorUsername }}</td>
               <td class="pa-0">
-                <v-icon v-if="!item.isPublic">mdi mdi-lock</v-icon>
+                <v-icon v-if="!item.isPublic"
+                        :disabled="item.creator !== getUserId"
+                        @click="changeAccessPressed(item)"
+                >
+                  mdi mdi-lock
+                </v-icon>
+                <v-icon v-else
+                        :disabled="item.creator !== getUserId"
+                        @click="changeAccessPressed(item)"
+                        style="opacity: 0.15"
+                >
+                  mdi mdi-lock-open
+                </v-icon>
               </td>
               <td class="pa-0">
                 <v-icon v-if="item.isFile" @click="download(item)">mdi mdi-download</v-icon>
@@ -105,13 +117,21 @@
             </tr>
           </template>
         </v-data-table>
-            <DeleteDialog
-                v-if="deleteDialog"
-                :id="pressedItem.id"
-                :name="pressedItem.name"
-                :dialog.sync="deleteDialog"
-                @update="loadPage()"
-            />
+          <DeleteDialog
+              v-if="deleteDialog"
+              :id="pressedItem.id"
+              :name="pressedItem.name"
+              :dialog.sync="deleteDialog"
+              @update="loadPage()"
+          />
+          <ChangeAccessToItem
+            v-if="changeAccessDialog"
+            :id="pressedItem.id"
+            :isOriginPublic="!!pressedItem.isPublic"
+            :users="users"
+            :dialog.sync="changeAccessDialog"
+            @update="loadPage()"
+          />
       </v-card>
     </v-row>
   </v-container>
@@ -125,16 +145,18 @@ import DeleteDialog from "../components/library/DeleteDialog.vue";
 import itemsAPI from "../API/itemsAPI.js";
 import usersAPI from "../API/usersAPI.js";
 import Swal from "sweetalert2";
+import ChangeAccessToItem from "../components/library/ChangeAccessToItem";
 
 export default {
   name: "Library",
-  components: { UploadFiles, CreateFolder, DeleteDialog },
+  components: { UploadFiles, CreateFolder, DeleteDialog, ChangeAccessToItem },
   data() {
     return {
       isLoading: true,
       uploadFilesDialog: false,
       createFolderDialog: false,
       deleteDialog: false,
+      changeAccessDialog: false,
       fileToCreator: {},
       headers: [
         { align: "start", sortable: false, value: "type", width: "5%" },
@@ -230,7 +252,11 @@ export default {
     deletePressed(item) {
       this.pressedItem = item;
       this.deleteDialog = true;
-    }
+    },
+    changeAccessPressed(item) {
+      this.pressedItem = item;
+      this.changeAccessDialog = true;
+    },
   },
 };
 </script>

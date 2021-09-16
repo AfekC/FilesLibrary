@@ -52,7 +52,7 @@ export default {
   methods: {
     async createFolder() {
       if (this.fileName.length > 0) {
-        const formData = {
+        const data = {
           name: this.fileName,
           isPublic: this.isPublic,
           parentItem: this.getCurrentDirectoryId === -1 ? null : this.getCurrentDirectoryId,
@@ -61,7 +61,7 @@ export default {
             return this.users.find(user => user.userName === userName).id;
           }),
         };
-        const isSuccessful = await itemsAPI.createFolder(formData);
+        const isSuccessful = await itemsAPI.createFolder(data);
         if (isSuccessful) {
           Swal.fire("Success", "folder created", "success");
           this.$emit('update');

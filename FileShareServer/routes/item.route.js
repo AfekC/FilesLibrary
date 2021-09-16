@@ -22,5 +22,6 @@ router.post('/new_folder', itemsController.newFolder);
 router.post('/delete/:id', itemsController.deleteById);
 router.post('/changeItemAccess', itemsController.changeItemAccess);
 router.get('/:id', itemsController.downloadItem)
+router.get('/getItemUsers/:id', itemsController.getItemUsers)
 
 module.exports = router
