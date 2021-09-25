@@ -1,4 +1,7 @@
+
+
 import { get, post, download } from './baseAPI.js';
+import Swal from "sweetalert2";
 const FileDownload = require('js-file-download');
 
 const uploadFiles = async (data) => {
@@ -35,7 +38,17 @@ const deleteItem = async (id) => {
 };
 
 const downloadItem = async (item) => {
+    Swal.fire({
+        title:"Preparing for download...",
+        imageUrl: "./../assets/loading.gif",
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        showConfirmButton:false,
+        width: '400px',
+    });
+    Swal.showLoading(Swal.getDenyButton())
     return await download(`item/${item.id}`).then((response) => {
+        Swal.close();
         FileDownload(response.data, item.name);
         return true;
     }).catch((e) => {
