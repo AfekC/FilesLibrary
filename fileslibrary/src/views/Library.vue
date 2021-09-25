@@ -96,15 +96,11 @@
               <td class="pa-0">
                 <v-icon v-if="!item.isPublic"
                         :disabled="item.creator !== getUserId"
-                        @click="changeAccessPressed(item)"
-                >
+                        @click="changeAccessPressed(item)">
                   mdi mdi-lock
                 </v-icon>
-                <v-icon v-else
-                        :disabled="item.creator !== getUserId"
-                        @click="changeAccessPressed(item)"
-                        style="opacity: 0.15"
-                >
+                <v-icon v-else-if="item.creator == getUserId"
+                        @click="changeAccessPressed(item)">
                   mdi mdi-lock-open
                 </v-icon>
               </td>
@@ -112,7 +108,10 @@
                 <v-icon v-if="item.isFile" @click="download(item)">mdi mdi-download</v-icon>
               </td>
               <td class="pa-0">
-                <v-icon @click="deletePressed(item)">mdi mdi-delete</v-icon>
+                <v-icon v-if="item.creator == getUserId"
+                        @click="deletePressed(item)">
+                  mdi mdi-delete
+                </v-icon>
               </td>
             </tr>
           </template>
@@ -162,8 +161,8 @@ export default {
         { align: "start", sortable: false, value: "type", width: "5%" },
         { text: "name", filterable: true, value: "name", width: "40%" },
         { align: "center", text: "size", sortable: false, value: "size", width: "13%" },
-        { align: "center", sortable: false, text: "date modified", value: "date", width: "15%" },
-        { align: "center", sortable: false, text: "last editor", value: "creator", width: "15%" },
+        { align: "center", sortable: true, text: "date modified", value: "dateUploaded", width: "15%" },
+        { align: "center", sortable: true, text: "creator", value: "creatorUsername", width: "15%" },
         { align: "center", sortable: false, value: "isPublic", width: "4%" },
         { align: "center", sortable: false, value: "download", width: "3%" },
         { align: "center", sortable: false, value: "trash", width: "3%" },
