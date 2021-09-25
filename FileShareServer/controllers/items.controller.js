@@ -135,14 +135,19 @@ export default class {
         if (!item) {
             return res.status(400).send({ message: 'ERROR'})
         }
-        res.download(item.serverPath, item.name, (err) => {
-            if (err) {
-                console.error(err);
-                res.status(500).send({
-                    message: "Could not download the file. " + err,
-                });
-            }
-        });
+        try {
+            res.download(item.serverPath, item.name, (err) => {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+            });
+        } catch (e) {
+            console.error(e);
+            return res.status(400).send({
+                message: "ERROR dowloading file",
+            });
+        }
     };
 
     static async getItemUsers(req, res) {

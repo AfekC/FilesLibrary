@@ -26,7 +26,7 @@ export const download = (path) => {
     return axios({
         url: origin + '/' + path,
         method: 'GET',
-        responseType: 'blob',
+        responseType: 'arraybuffer',
     }).catch((e) => {
         authenticationExpiredHandler(e.response.status);
     })
