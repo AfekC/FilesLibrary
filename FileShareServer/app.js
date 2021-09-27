@@ -36,7 +36,7 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '../fileslibrary/dist')));
 app.use(authMiddleware);
 app.use(cookieParser());
-app.use(session({ secret: "super secret string" }));
+app.use(session({ secret: 'a string for the session token' }));
 
 //  Script to setup sqlite DB in memory //
 dao.setupDbForDev();

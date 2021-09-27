@@ -12,13 +12,13 @@ const authenticationExpiredHandler = (e) => {
 
 export const post = (path, data) => {
     return axios.post(origin + '/' + path, data).catch((e) => {
-        authenticationExpiredHandler(e.response.status);
+        authenticationExpiredHandler(e);
     })
 };
 
 export const get = (path) => {
     return axios.get(origin + '/' + path).catch((e) => {
-        authenticationExpiredHandler(e.response.status);
+        authenticationExpiredHandler(e);
     })
 };
 
@@ -28,6 +28,6 @@ export const download = (path) => {
         method: 'GET',
         responseType: 'arraybuffer',
     }).catch((e) => {
-        authenticationExpiredHandler(e.response.status);
+        authenticationExpiredHandler(e);
     })
 };
