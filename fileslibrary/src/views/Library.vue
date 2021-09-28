@@ -231,7 +231,7 @@ export default {
         index++;
         s = (s / 1024);
       }
-      return Math.ceil(s) + d[index];
+      return Math.ceil(s*10)/10 + d[index];
     },
     rowClicked(item) {
       if (!item.isFile) {

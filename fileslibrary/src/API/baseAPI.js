@@ -1,24 +1,31 @@
 import axios from "axios";
 import store from "../store";
+import Swal from "sweetalert2";
 
 const origin = 'http://'+window.location.hostname+':4000';
 
-const authenticationExpiredHandler = (e) => {
-    if (e.response.status === 401) {
+const generalErrorHandler = (e) => {
+    if(!e.response){
+        Swal.fire("Error", "network error", "error");
+    } else if (e.response.status === 401) {
         store.dispatch('logout');
+        Swal.fire("Error", "authentication error", "error");
+    } else {
+        console.log(e);
+        Swal.fire("Error", "unknown error", "error");
     }
     throw e;
 };
 
 export const post = (path, data) => {
     return axios.post(origin + '/' + path, data).catch((e) => {
-        authenticationExpiredHandler(e);
+        generalErrorHandler(e);
     })
 };
 
 export const get = (path) => {
     return axios.get(origin + '/' + path).catch((e) => {
-        authenticationExpiredHandler(e);
+        generalErrorHandler(e);
     })
 };
 
@@ -28,6 +35,6 @@ export const download = (path) => {
         method: 'GET',
         responseType: 'arraybuffer',
     }).catch((e) => {
-        authenticationExpiredHandler(e);
+        generalErrorHandler(e);
     })
 };
