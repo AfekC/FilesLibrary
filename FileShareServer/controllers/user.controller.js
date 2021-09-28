@@ -28,7 +28,8 @@ export const authMiddleware = async (req, res, next) => {
         }
     } catch (e) {
         console.log('jwt error');
-        return res.status(401);
+        res.status(401);
+        return res.json({ error: 'jwt error' });
     }
     next();
 };

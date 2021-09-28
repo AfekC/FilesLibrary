@@ -1,11 +1,11 @@
 import axios from "axios";
-import { mapActions } from "vuex";
+import store from "../store";
 
 const origin = 'http://'+window.location.hostname+':4000';
 
 const authenticationExpiredHandler = (e) => {
     if (e.response.status === 401) {
-        mapActions(['logout'])();
+        store.dispatch('logout');
     }
     throw e;
 };

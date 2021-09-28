@@ -99,7 +99,7 @@
                         @click="changeAccessPressed(item)">
                   mdi mdi-lock
                 </v-icon>
-                <v-icon v-else-if="item.creator == getUserId"
+                <v-icon v-else-if="item.creator === getUserId"
                         @click="changeAccessPressed(item)">
                   mdi mdi-lock-open
                 </v-icon>
@@ -108,7 +108,7 @@
                 <v-icon v-if="item.isFile" @click="download(item)">mdi mdi-download</v-icon>
               </td>
               <td class="pa-0">
-                <v-icon v-if="item.creator == getUserId"
+                <v-icon v-if="item.creator === getUserId"
                         @click="deletePressed(item)">
                   mdi mdi-delete
                 </v-icon>
@@ -204,10 +204,14 @@ export default {
     ...mapActions(['rollDirToId']),
     async loadPage() {
       this.isLoading = true;
-      this.items = await itemsAPI.getFilesByCurrentFolderId(
-          this.getCurrentDirectoryId === -1 ? null : this.getCurrentDirectoryId
-      );
-      this.isLoading = false;
+      try {
+        this.items = await itemsAPI.getFilesByCurrentFolderId(
+            this.getCurrentDirectoryId === -1 ? null : this.getCurrentDirectoryId
+        );
+        this.isLoading = false;
+      } catch (e) {
+        this.$router.push('/')
+      }
     },
     getDate(dateUploaded) {
       const date = new Date(dateUploaded);
