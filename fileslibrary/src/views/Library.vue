@@ -108,7 +108,7 @@
                 <v-icon v-if="item.isFile" @click="download(item)">mdi mdi-download</v-icon>
               </td>
               <td class="pa-0">
-                <v-icon v-if="item.creator === getUserId"
+                <v-icon v-if="!item.creator || item.creator === getUserId"
                         @click="deletePressed(item)">
                   mdi mdi-delete
                 </v-icon>

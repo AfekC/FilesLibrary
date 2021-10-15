@@ -28,24 +28,17 @@
         </v-list-item-group>
       </v-list>
       <template v-if="isLoggedIn" v-slot:append>
-        <div class="pa-2">
-          <v-btn @click.stop="dialog = true" block> Logout </v-btn>
-          <v-dialog v-model="dialog" max-width="290">
-            <v-card>
-              <v-card-title>
-                Are You Sure You Want To Log Out?
-              </v-card-title>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="green darken-1" text @click="logOutFunction()">
-                  LogOut
-                </v-btn>
-                <v-btn color="green darken-1" text @click="dialog = false">
-                  Cancel
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
+        <div class="pa-2 pb-8">
+          <v-btn @click.stop="logOutDialog = true" block> Logout </v-btn>
+          <LogOut :dialog.sync="logOutDialog"/>
+        </div>
+      </template>
+      <template v-else v-slot:append>
+        <div class="pa-2 pb-8">
+          <v-btn @click.stop="logInDialog = true" block> Log In </v-btn>
+          <v-btn @click.stop="signInDialog = true" block class="mt-2"> Sign In </v-btn>
+          <LogIn :dialog.sync="logInDialog"/>
+          <SignIn :dialog.sync="signInDialog"/>
         </div>
       </template>
     </v-navigation-drawer>
@@ -54,13 +47,23 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from "vuex";
+import LogIn from "./account/LogIn.vue";
+import SignIn from "./account/SignIn.vue";
+import LogOut from "./account/LogOut";
 
 export default {
   name: "NavBar",
+  components: {
+    LogOut,
+    LogIn,
+    SignIn,
+  },
   data() {
     return {
       drawer: false,
-      dialog: false,
+      logOutDialog: false,
+      logInDialog: false,
+      signInDialog: false,
       list: [
         {
           icon: "mdi-home",
@@ -83,13 +86,6 @@ export default {
   computed: {
     ...mapState(['currentPageName']),
     ...mapGetters(['getUserName', 'isLoggedIn']),
-  },
-  methods: {
-    ...mapActions(['logout']),
-    logOutFunction() {
-      this.dialog = false;
-      this.logout();
-    },
   },
 };
 </script>

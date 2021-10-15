@@ -48,7 +48,7 @@
 <script>
 import {mapGetters, mapMutations} from "vuex";
 import consts from "../consts";
-import SignIn from "../components/account/SingIn.vue";
+import SignIn from "../components/account/SignIn.vue";
 import LogIn from "../components/account/LogIn.vue";
 import UpdateUser from "../components/account/UpdateUser";
 import ChangePassword from "../components/account/ChangePassword";
