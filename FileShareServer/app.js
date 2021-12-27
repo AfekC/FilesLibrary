@@ -33,7 +33,7 @@ export const app = express();
 // Setting up port with express js
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, '../fileslibrary/dist')));
+app.use(express.static(path.join(__dirname, 'uiDist/dist')));
 app.use(authMiddleware);
 app.use(cookieParser());
 app.use(session({ secret: 'a string for the session token' }));
