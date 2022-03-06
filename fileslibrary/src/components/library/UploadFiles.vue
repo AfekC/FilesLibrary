@@ -3,70 +3,86 @@
     <v-card :loading="loading" justify="center">
       <template slot="progress">
         <v-progress-linear
-            color="deep-purple"
-            height="10"
-            indeterminate
-        ></v-progress-linear>
-      </template>
-      <v-card-title class="justify-center">
-        <span class="text-h5">select your files</span>
-      </v-card-title>
-      <v-checkbox v-if="isLoggedIn" v-model="isPublic" label="public" class="pl-13" />
-      <v-col cols="11" class="pl-13">
-        <v-combobox
-            v-if="!isPublic"
-            v-model="selectedUsers"
-            :items="userNames"
-            label="Users to share with"
-            multiple
-            chips
-        ></v-combobox>
-      </v-col>
-      <v-file-input
-        v-model="files"
-        width="30vw"
-        color="deep-purple accent-4"
-        counter
-        label="File input"
-        multiple
-        placeholder="Select your files"
-        prepend-icon="mdi-paperclip"
-        outlined
-        show-size
-        style="width: 30vw"
-        class="ma-2 ml-11"
-      >
-        <template v-slot:selection="{ index, text }">
-          <v-chip
-            v-if="index < 2"
-            color="deep-purple accent-4"
-            dark
-            label
-            small
-          >
-            {{ text }}
-          </v-chip>
-
-          <span
-            v-else-if="index === 2"
-            class="text-overline grey--text text--darken-3 mx-2"
-          >
-            +{{ files.length - 2 }} File(s)
-          </span>
-        </template>
-      </v-file-input>
-      <v-card-actions class="justify-center">
-        <v-btn
-          color="blue darken-1"
-          text
-          @click.stop="$emit('update:dialog', false)"
+            :value="uploadPercentage.value"
+            color="blue-grey"
+            height="3vh"
         >
-          Close
-        </v-btn>
-        <v-btn color="blue darken-1" text @click.stop="uploadFiles">
-          Upload
-        </v-btn>
-      </v-card-actions>
+          <template v-slot:default="{ value }">
+            <strong>{{ Math.ceil(value) }}%</strong>
+          </template>
+        </v-progress-linear>
+      </template>
+      <div v-if="uploadPercentage.value !== 100">
+        <v-card-title class="justify-center">
+          <span class="text-h5">select your files</span>
+        </v-card-title>
+        <v-checkbox v-if="isLoggedIn" v-model="isPublic" label="public" class="pl-13" />
+        <v-col cols="11" class="pl-13">
+          <v-combobox
+              v-if="!isPublic"
+              v-model="selectedUsers"
+              :items="userNames"
+              label="Users to share with"
+              multiple
+              chips
+          ></v-combobox>
+        </v-col>
+        <v-file-input
+          v-model="files"
+          width="30vw"
+          color="deep-purple accent-4"
+          counter
+          label="File input"
+          multiple
+          placeholder="Select your files"
+          prepend-icon="mdi-paperclip"
+          outlined
+          show-size
+          style="width: 30vw"
+          class="ma-2 ml-11"
+        >
+          <template v-slot:selection="{ index, text }">
+            <v-chip
+              v-if="index < 2"
+              color="deep-purple accent-4"
+              dark
+              label
+              small
+            >
+              {{ text }}
+            </v-chip>
+
+            <span
+              v-else-if="index === 2"
+              class="text-overline grey--text text--darken-3 mx-2"
+            >
+              +{{ files.length - 2 }} File(s)
+            </span>
+          </template>
+        </v-file-input>
+        <v-card-actions class="justify-center">
+          <v-btn
+            color="blue darken-1"
+            text
+            :disabled="loading"
+            @click.stop="$emit('update:dialog', false)"
+          >
+            Close
+          </v-btn>
+          <v-btn
+              color="blue darken-1"
+              text
+              :disabled="loading || files.length === 0"
+              @click.stop="uploadFiles">
+            Upload
+          </v-btn>
+        </v-card-actions>
+      </div>
+      <div v-else>
+        <v-card-title class="justify-center">
+          <span class="text-h5">waiting for server confirm</span>
+        </v-card-title>
+      </div>
     </v-card>
   </v-dialog>
 </template>
@@ -83,6 +99,7 @@ export default {
       files: [],
       loading: false,
       selectedUsers: [],
+      uploadPercentage: { value: 0 },
     };
   },
   props: {
@@ -92,6 +109,7 @@ export default {
   methods: {
     async uploadFiles() {
       if (this.files) {
+        this.uploadPercentage.value = 0;
         this.loading = true;
         let formData = new FormData();
 
@@ -109,7 +127,12 @@ export default {
           return this.users.find(user => user.userName === userName).id;
         })));
 
-        const isSuccess = await itemsAPI.uploadFiles(formData);
+        const isSuccess = await itemsAPI.uploadFiles(formData, {
+          onUploadProgress: (progressEvent) => {
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+            this.uploadPercentage.value = percentCompleted;
+          }
+        });
         if (isSuccess) {
           Swal.fire("Success", "all files uploaded", "success");
           this.$emit('update');

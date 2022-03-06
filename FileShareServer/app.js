@@ -1,28 +1,34 @@
 import conf from './conf/conf.json'
 import getLocalIP from './helpers'
-
-import express from 'express';
-import bodyParser from 'body-parser';
-const session = require('express-session');
-const cookieParser = require('cookie-parser');
-const cors = require('cors');
-const path = require('path');
-const fs = require('fs')
-
 import dao from './repositories/dao';
 import { authMiddleware } from './controllers/user.controller';
 import userRoutes from './routes/user.route';
 import itemRoutes from './routes/item.route';
+import express from 'express';
+import bodyParser from 'body-parser';
 
-const folderName = conf.baseLibraryPath;
+require('./minio')
+require("dotenv").config();
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
+const path = require('path');
 
-try {
-  if (!fs.existsSync(folderName)) {
-    fs.mkdirSync(folderName);
-  }
-} catch (err) {
-  console.error(err);
-}
+
+// create bucket
+(async () => {
+    const { minioClient } = require('./minio');
+
+    console.log(`Creating Bucket: ${process.env.MINIO_BUCKET_NAME}`);
+    await minioClient.makeBucket(process.env.MINIO_BUCKET_NAME, "hello-there").catch((e) => {
+        console.log(`Error while creating bucket '${process.env.MINIO_BUCKET_NAME}': ${e.message}`);
+    });
+    console.log(`Listing all buckets...`);
+    const bucketsList = await minioClient.listBuckets();
+    console.log(
+        `Buckets List: ${bucketsList.map((bucket) => bucket.name).join(",\t")}`
+    );
+})();
 
 console.log('local ip:');
 console.log(getLocalIP());

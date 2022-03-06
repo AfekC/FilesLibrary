@@ -6,6 +6,5 @@
         "port": "4000"
     },
     "dbName": "FilesLibraryDB.sqlite3",
-    "saltRounds": 10,
-    "baseLibraryPath": "D:\\libraryForProject"
+    "saltRounds": 10
 }

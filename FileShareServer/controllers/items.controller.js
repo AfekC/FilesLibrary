@@ -1,7 +1,7 @@
 import repository from '../repositories/itemRepository';
 import { asyncForEach } from '../helpers'
 
-const fs = require('fs');
+const { minioClient } = require('../minio');
 
 export default class {
     static async getAllItems(req, res) {
@@ -21,13 +21,25 @@ export default class {
                 dateUploaded: (new Date()).getTime(),
                 parentItem: JSON.parse(req.body.parentItem),
                 creator: JSON.parse(req.body.creator),
-                path: file.path,
+                objectName: file.objectName,
             };
             const usersToShare = JSON.parse(req.body.usersToShare) + req.userId;
-            let item = await repository.getItemByNameAndParent(data.name, data.parentItem);
-            if (!!item) {
-                isAllSuccess = false;
-            } else if (!await repository.addItem(data)) {
+            const originName = data.name;
+            let item = await repository.getItemByNameAndParent(originName, data.parentItem);
+            let counter = 0;
+            let lastIndex = originName.lastIndexOf('.');
+            if (lastIndex == -1) {
+                lastIndex = originName.length;
+            }
+            while (!!item) {
+                counter += 1;
+                data.name =
+                    originName.substring(0, lastIndex) +
+                    `(${counter})` +
+                    originName.substring(lastIndex);
+                item = await repository.getItemByNameAndParent(data.name, data.parentItem);
+            }
+            if (!await repository.addItem(data)) {
                 isAllSuccess = false;
             } else if (!!req.userId && !data.isPublic) {
                 item = await repository.getItemByNameAndParent(data.name, data.parentItem);
@@ -111,8 +123,12 @@ export default class {
 
             if (!!item.serverPath) {
                 try {
-                    fs.unlinkSync(item.serverPath);
-                    //file removed
+                    minioClient.removeObject(process.env.MINIO_BUCKET_NAME, item.serverPath, function(error) {
+                        if (error) {
+                            return console.log('Unable to remove object', error)
+                        }
+                        console.log('Removed the object')
+                    });
                 } catch(err) {
                     console.error(err);
                 }
@@ -136,11 +152,12 @@ export default class {
             return res.status(400).send({ message: 'ERROR'})
         }
         try {
-            res.download(item.serverPath, item.name, (err) => {
-                if (err) {
-                    console.error(err);
-                    return;
+            minioClient.getObject(process.env.MINIO_BUCKET_NAME, item.serverPath, function(error, stream) {
+                if(error) {
+                    console.error(error);
+                    return res.status(500).send(error);
                 }
+                stream.pipe(res);
             });
         } catch (e) {
             console.error(e);

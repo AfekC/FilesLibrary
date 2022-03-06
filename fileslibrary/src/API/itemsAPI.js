@@ -1,11 +1,11 @@
 
 
-import { get, post, download } from './baseAPI.js';
+import { get, post, download, upload } from './baseAPI.js';
 import Swal from "sweetalert2";
 const FileDownload = require('js-file-download');
 
-const uploadFiles = async (data) => {
-    return await post('item/upload-files', data).then(() => {
+const uploadFiles = async (data, config) => {
+    return await upload('item/upload-files', data, config).then(() => {
         return true
     }).catch(() => {
         return false;
@@ -13,7 +13,7 @@ const uploadFiles = async (data) => {
 };
 
 const createFolder = async (data) => {
-    return  await post('item/new_folder', data).then(() => {
+    return await post('item/new_folder', data).then(() => {
         return true
     }).catch(() => {
         return false;
@@ -40,7 +40,6 @@ const deleteItem = async (id) => {
 const downloadItem = async (item) => {
     Swal.fire({
         title:"Preparing for download...",
-        imageUrl: "./../assets/loading.gif",
         allowEscapeKey: false,
         allowOutsideClick: false,
         showConfirmButton:false,

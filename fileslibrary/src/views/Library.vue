@@ -89,7 +89,7 @@
                 <v-icon v-if="!item.isFile">mdi mdi-folder-outline</v-icon>
                 <v-icon v-else>mdi mdi-file-outline</v-icon>
               </td>
-              <td @click="rowClicked(item)">{{ item.name }}</td>
+              <td class="clickable" @click="rowClicked(item)">{{ item.name }}</td>
               <td style="text-align:center">{{ getSize(item.size) }}</td>
               <td style="text-align:center; white-space: pre-wrap">{{ getDate(item.dateUploaded) }}</td>
               <td style="text-align:center">{{ item.creatorUsername }}</td>
@@ -100,6 +100,7 @@
                   mdi mdi-lock
                 </v-icon>
                 <v-icon v-else-if="item.creator === getUserId"
+                        :disabled="item.creator === null"
                         @click="changeAccessPressed(item)">
                   mdi mdi-lock-open
                 </v-icon>
@@ -263,3 +264,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.clickable {
+  cursor: pointer;
+}
+</style>

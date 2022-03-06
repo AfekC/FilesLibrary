@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import LogIn from "./account/LogIn.vue";
 import SignIn from "./account/SignIn.vue";
 import LogOut from "./account/LogOut";

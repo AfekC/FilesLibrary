@@ -26,7 +26,7 @@ export default class {
 
     static async addItem(data) {
         return dao.run('INSERT INTO ITEM (name, isPublic, isFile, size, dateUploaded, parentItem, creator, serverPath) VALUES (?,?,?,?,?,?,?,?)'
-            , [data.name, data.isPublic, data.isFile, data.size, data.dateUploaded, data.parentItem, data.creator, data.path])
+            , [data.name, data.isPublic, data.isFile, data.size, data.dateUploaded, data.parentItem, data.creator, data.objectName])
             .then((res) => true).catch((err) => false);
     }
 

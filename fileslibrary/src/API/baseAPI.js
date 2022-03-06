@@ -23,6 +23,12 @@ export const post = (path, data) => {
     })
 };
 
+export const upload = (path, data, config) => {
+    return axios.post(origin + '/' + path, data, config).catch((e) => {
+        generalErrorHandler(e);
+    })
+};
+
 export const get = (path) => {
     return axios.get(origin + '/' + path).catch((e) => {
         generalErrorHandler(e);

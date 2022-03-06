@@ -7,14 +7,11 @@
 
 1. Setup: need NodeJS 8+ version and npm
 2. Install dependencies with npm: `npm install`
-3. Launch the server with `node server.js`
-
-## Tips & Tricks
-- Use `nodemon` to autoreload the project for development purposes : `npm install -g nodemon`
-- Launch the project with `nodemon server.js` command
+3. Launch the server with `npm run serve`
 
 ## Use of Swagger UI !
 Simply access to `http://localhost:4000/` to access SwaggerUI interface. It allows to run each route to manipulate the database.
 
-## Licence
-MIT
+## How to run the Minio Docker image
+docker run -p 9000:9000 -p 9001:9001 --name minio -v D:\libraryForProject:/data -e "MINIO_ROOT_USER=root" -e "MINIO_ROOT_PASSWORD=password" quay.io/minio/minio server /data --console-address ":9001"
+replace "D:\libraryForProject" with the file location you want to use
