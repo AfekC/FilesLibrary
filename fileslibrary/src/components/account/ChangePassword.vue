@@ -2,8 +2,8 @@
   <v-dialog v-model="dialog" persistent max-width="600px">
     <v-card>
       <v-form v-model="isValidate">
-        <v-card-title>
-          <span class="text-h5">Change Password</span>
+        <v-card-title style="justify-content: end">
+          <span class="text-h5">שנה סיסמה</span>
         </v-card-title>
         <v-card-text>
           <v-container>
@@ -11,7 +11,7 @@
               <v-col cols="12">
                 <v-text-field
                     v-model="oldPassword"
-                    label="Current Password"
+                    label="סיסמה נוכחית"
                     type="password"
                     required
                 ></v-text-field>
@@ -20,7 +20,7 @@
                 <v-text-field
                     :rules="passwordRules"
                     v-model="newPassword"
-                    label="New Password"
+                    label="סיסמה חדשה"
                     type="password"
                     required
                 ></v-text-field>
@@ -28,16 +28,16 @@
               <v-col cols="12">
                 <v-text-field
                     v-model="newPasswordConfirm"
-                    label="Confirm Password"
+                    label="חזרה על סיסמה חדשה"
                     type="password"
                     required
                 ></v-text-field>
               </v-col>
             </v-row>
           </v-container>
-          <small>*indicates required field</small>
+          <small>*שדות חובה</small>
           <br/>
-          <small>make sure that the passwords are similar</small>
+          <small>וודא שהסיסמאות זהות</small>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -46,7 +46,7 @@
               text
               @click.stop="$emit('update:dialog', false)"
           >
-            Close
+            סגירה
           </v-btn>
           <v-btn
               :disabled="!isValidate || newPassword !== newPasswordConfirm"
@@ -54,7 +54,7 @@
               text
               @click.stop="savePassword()"
           >
-            Save
+            שמור
           </v-btn>
         </v-card-actions>
       </v-form>
@@ -86,13 +86,13 @@ export default {
       const response = await usersAPI.updatePassword(this.oldPassword, this.newPassword)
       if (response === true) {
         this.$emit('update:dialog', false);
-        Swal.fire("Success", "Password Updated Successfully", "success");
+        Swal.fire("Success", "הסיסמה החדשה עודכנה בהצלחה", "success");
       } else {
         console.log(response)
         if (response === 401) {
-          Swal.fire("Error", "Wrong Password", "error");
+          Swal.fire("Error", "סיסמה שגויה", "error");
         } else {
-          Swal.fire("Error", "Error Update Password", "error");
+          Swal.fire("Error", "שגיאה בתהליך עדכון הסיסמה", "error");
         }
       }
     },

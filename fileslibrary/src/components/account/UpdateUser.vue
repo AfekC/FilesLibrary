@@ -45,7 +45,7 @@
                elevation="1"
                width="100%"
                @click="saveUser()">
-          SAVE
+          שמור
         </v-btn>
       </v-col>
     </v-row>

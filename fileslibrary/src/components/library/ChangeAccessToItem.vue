@@ -2,7 +2,7 @@
   <v-dialog v-model="dialog" persistent width="40vw" style="height: 50vh">
     <v-card justify="center">
       <v-card-title class="justify-center">
-        <span class="text-h5">change permissions</span>
+        <span class="text-h5">שנה הרשאות</span>
       </v-card-title>
       <v-checkbox v-if="isLoggedIn" v-model="isPublic" label="public" class="pl-13" />
       <v-col cols="11" class="pl-13">
@@ -10,7 +10,7 @@
             v-if="!isPublic"
             v-model="selectedUsers"
             :items="userNames"
-            label="Users to share with"
+            label="משתמשים עם הרשאות"
             multiple
             chips
         ></v-combobox>
@@ -21,10 +21,10 @@
             text
             @click.stop="$emit('update:dialog', false)"
         >
-          Close
+          סגירה
         </v-btn>
         <v-btn color="blue darken-1" text @click.stop="sendChangesToServer()">
-          Apply
+          אישור
         </v-btn>
       </v-card-actions>
     </v-card>

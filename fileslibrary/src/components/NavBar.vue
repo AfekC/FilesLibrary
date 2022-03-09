@@ -7,12 +7,15 @@
 
       <v-spacer></v-spacer>
 
-      <v-toolbar-title>{{ getUserName }}</v-toolbar-title>
+      <v-toolbar-title>
+        <v-text-field>{{ getUserName }}</v-text-field>
+        <v-text-field>  :שלום</v-text-field>
+      </v-toolbar-title>
     </v-app-bar>
     <v-navigation-drawer v-model="drawer" absolute temporary>
       <v-list-item>
         <v-list-item-content>
-          <v-list-item-title class="text-h6"> Menu </v-list-item-title>
+          <v-list-item-title class="text-h6"> תפריט </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
@@ -29,14 +32,14 @@
       </v-list>
       <template v-if="isLoggedIn" v-slot:append>
         <div class="pa-2 pb-8">
-          <v-btn @click.stop="logOutDialog = true" block> Logout </v-btn>
+          <v-btn @click.stop="logOutDialog = true" block> התנתק </v-btn>
           <LogOut :dialog.sync="logOutDialog"/>
         </div>
       </template>
       <template v-else v-slot:append>
         <div class="pa-2 pb-8">
-          <v-btn @click.stop="logInDialog = true" block> Log In </v-btn>
-          <v-btn @click.stop="signInDialog = true" block class="mt-2"> Sign In </v-btn>
+          <v-btn @click.stop="logInDialog = true" block> התחבר </v-btn>
+          <v-btn @click.stop="signInDialog = true" block class="mt-2"> הרשם </v-btn>
           <LogIn :dialog.sync="logInDialog"/>
           <SignIn :dialog.sync="signInDialog"/>
         </div>
@@ -67,17 +70,17 @@ export default {
       list: [
         {
           icon: "mdi-home",
-          title: "Home",
+          title: "מסך הבית",
           link: "/",
         },
         {
           icon: "mdi-book",
-          title: "Library",
+          title: "תיקייה משותפת",
           link: "/library",
         },
         {
           icon: "mdi-account",
-          title: "Account",
+          title: "פרטי משתמש",
           link: "/account",
         },
       ],

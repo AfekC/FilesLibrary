@@ -3,8 +3,8 @@
     <v-dialog v-model="dialog" persistent max-width="600px">
       <v-card>
         <v-form v-model="isValidate">
-          <v-card-title>
-            <span class="text-h5">User Profile</span>
+          <v-card-title style="justify-content: end">
+            <span class="text-h5">פרטי משתמש</span>
           </v-card-title>
           <v-card-text>
             <v-container>
@@ -13,7 +13,7 @@
                   <v-text-field
                     :rules="nameRules"
                     v-model="firstName"
-                    label="first name*"
+                    label="שם פרטי*"
                     required
                   ></v-text-field>
                 </v-col>
@@ -21,7 +21,7 @@
                   <v-text-field
                     :rules="nameRules"
                     v-model="lastName"
-                    label="last name*"
+                    label="שם משפחה*"
                     required
                   ></v-text-field>
                 </v-col>
@@ -29,7 +29,7 @@
                   <v-text-field
                     :rules="userNameRules"
                     v-model="userName"
-                    label="user name*"
+                    label="שם משתמש*"
                     required
                   ></v-text-field>
                 </v-col>
@@ -37,14 +37,14 @@
                   <v-text-field
                     :rules="passwordRules"
                     v-model="password"
-                    label="Password*"
+                    label="סיסמה*"
                     type="password"
                     required
                   ></v-text-field>
                 </v-col>
               </v-row>
             </v-container>
-            <small>*indicates required field</small>
+            <small>*שדות חובה</small>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -53,7 +53,7 @@
               text
               @click.stop="$emit('update:dialog', false)"
             >
-              Close
+              סגירה
             </v-btn>
             <v-btn
               :disabled="!isValidate"
@@ -61,7 +61,7 @@
               text
               @click.stop="saveUser()"
             >
-              Save
+              שמור
             </v-btn>
           </v-card-actions>
         </v-form>

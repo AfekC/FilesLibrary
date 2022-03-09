@@ -2,16 +2,16 @@
   <v-row justify="center">
     <v-dialog v-model="dialog" max-width="400px">
       <v-card>
-        <v-card-title>
-          Are You Sure You Want To Log Out?
+        <v-card-title style="justify-content: center">
+          האם אתה רוצה להתנתק?
         </v-card-title>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="green darken-1" text @click="$emit('update:dialog', false)">
-            Cancel
+            סגירה
           </v-btn>
           <v-btn color="green darken-1" text @click="logOutFunction()">
-            LogOut
+            התנתק
           </v-btn>
         </v-card-actions>
       </v-card>

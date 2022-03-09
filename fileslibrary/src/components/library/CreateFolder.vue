@@ -2,7 +2,7 @@
   <v-dialog v-model="dialog" persistent width="40vw" style="height: 50vh">
     <v-card justify="center">
       <v-card-title class="justify-center">
-        <span class="text-h5">create folder</span>
+        <span class="text-h5">צור תיקייה</span>
       </v-card-title>
       <v-checkbox v-if="isLoggedIn" v-model="isPublic" label="public" class="pl-13" />
       <v-col cols="11" class="pl-13">
@@ -10,22 +10,22 @@
             v-if="!isPublic"
             v-model="selectedUsers"
             :items="userNames"
-            label="Users to share with"
+            label="הרשאות למשתמשים"
             multiple
             chips
         ></v-combobox>
       </v-col>
-      <v-text-field label="folder name" v-model="fileName" class="ml-10 mr-10" />
+      <v-text-field label="שם תיקייה" v-model="fileName" class="ml-10 mr-10" />
       <v-card-actions class="justify-center">
         <v-btn
           color="blue darken-1"
           text
           @click.stop="$emit('update:dialog', false)"
         >
-          Close
+          סגירה
         </v-btn>
         <v-btn color="blue darken-1" text @click.stop="createFolder">
-          Upload
+          אישור
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -63,10 +63,10 @@ export default {
         };
         const isSuccessful = await itemsAPI.createFolder(data);
         if (isSuccessful) {
-          Swal.fire("Success", "folder created", "success");
+          Swal.fire("Success", "התיקייה נוצרה", "success");
           this.$emit('update');
         } else {
-          Swal.fire("Error", "error creating the folder", "error");
+          Swal.fire("Error", "שגיאה ביצירת התיקייה", "error");
         }
       } else {
         console.log("file name is empty");

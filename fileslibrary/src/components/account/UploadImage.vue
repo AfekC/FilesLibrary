@@ -2,7 +2,7 @@
   <v-dialog v-model="dialog" persistent max-width="400px">
     <v-card style="border-radius: 15px">
       <v-card-title>
-        <span class="text-h5">Upload Image</span>
+        <span class="text-h5">העלה תמונה</span>
       </v-card-title>
       <v-card-text>
         <v-img v-if="fileInB64"
@@ -24,7 +24,7 @@
             text
             @click.stop="$emit('update:dialog', false)"
         >
-          Close
+          סגירה
         </v-btn>
         <v-btn
             :disabled="!file"
@@ -32,7 +32,7 @@
             text
             @click.stop="saveImage()"
         >
-          Save
+          שמור
         </v-btn>
       </v-card-actions>
     </v-card>

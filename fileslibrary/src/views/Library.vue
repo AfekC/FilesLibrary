@@ -10,14 +10,14 @@
                 <v-icon v-if="parentsDirs.length > 5">mdi-chevron-right</v-icon>
                 <v-breadcrumbs :items="breadcrumbs" class="pl-2 mt-2 ml-1" style="max-width: 50vw">
                   <template v-slot:divider>
-                    <v-icon>mdi-chevron-right</v-icon>
+                    <v-icon>mdi mdi-chevron-right</v-icon>
                   </template>
                   <v-breadcrumbs-item
                       slot="item"
                       slot-scope="{ item }"
                       exact
                       @click="loadPrevFolder(item.id)"
-                      class="pa-0"
+                      class="pa-0 clickable"
                       style="font-size:16px">
                     {{ shortName(item.name) }}
                   </v-breadcrumbs-item>
@@ -30,7 +30,7 @@
                   v-model="search"
                   dense
                   append-icon="mdi-magnify"
-                  label="Search"
+                  label="חיפוש"
                   single-line
                   hide-details
               ></v-text-field>
@@ -43,7 +43,7 @@
               width="45%"
               @click.stop="createFolderDialog = true"
             >
-              New folder
+              תיקייה חדשה
               <v-icon right dark> mdi-cloud-upload </v-icon>
             </v-btn>
             <CreateFolder
@@ -58,7 +58,7 @@
               width="45%"
               @click.stop="uploadFilesDialog = true"
             >
-              Upload Files
+              העלעת קבצים
               <v-icon right dark> mdi-cloud-upload </v-icon>
             </v-btn>
             <UploadFiles

@@ -2,10 +2,10 @@
   <v-container v-if="!isLoggedIn">
     <v-row class="text-center">
       <v-col class="text-center" style="padding-top: 25vh">
-        <h1 class="display-2 font-weight-bold">You Are Not Signed In</h1>
+        <h1 class="display-2 font-weight-bold">התחבר כמשתמש על מנת לערוך פרטים אישיים</h1>
         <div style="padding-top: 5vh">
-          <v-btn @click.stop="logInDialog = true" class="ma-5"> LOG IN</v-btn>
-          <v-btn @click.stop="signInDialog = true" class="ma-5">SIGN IN</v-btn>
+          <v-btn @click.stop="logInDialog = true" class="ma-5"> התחבר</v-btn>
+          <v-btn @click.stop="signInDialog = true" class="ma-5">הרשם</v-btn>
           <LogIn :dialog.sync="logInDialog"/>
           <SignIn :dialog.sync="signInDialog"/>
         </div>
@@ -39,7 +39,7 @@
       </v-col>
     </v-row>
     <v-row justify="center" class="pa-3">
-      <a @click.stop="changePasswordDialog = true"> change password </a>
+      <a @click.stop="changePasswordDialog = true"> שנה סיסמה </a>
       <ChangePassword :dialog.sync="changePasswordDialog" />
     </v-row>
   </v-container>

@@ -2,7 +2,7 @@
   <v-dialog v-model="dialog" persistent width="30vw" style="height: 50vh">
     <v-card justify="center">
       <v-card-title class="justify-center">
-        <span class="text-h5"> {{ `Delete ${name}?` }}</span>
+        <span class="text-h5"> {{ `האם למחוק את ${name}?` }}</span>
       </v-card-title>
       <v-card-actions class="justify-center">
         <v-btn
@@ -10,10 +10,10 @@
           text
           @click.stop="$emit('update:dialog', false)"
         >
-          Cancel
+          סגירה
         </v-btn>
         <v-btn color="blue darken-1" text @click.stop="deleteItem">
-          Delete
+          מחיקה
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -34,10 +34,10 @@ export default {
     async deleteItem() {
       const isSuccessful = await itemsAPI.deleteItem(this.id);
       if (isSuccessful) {
-        Swal.fire("Success", "item deleted", "success");
+        Swal.fire("Success", "הפריט נמחק בהצלחה", "success");
         this.$emit('update');
       } else {
-        Swal.fire("Error", "error delete item", "error");
+        Swal.fire("Error", "תקלה במחיקת הפריט", "error");
       }
       this.$emit("update:dialog", false);
     },

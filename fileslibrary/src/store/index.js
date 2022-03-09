@@ -56,7 +56,7 @@ export default new Vuex.Store({
   },
   getters: {
     isUserEmpty: state => Object.keys(state.user).length === 0,
-    getUserName: state => state.user.userName || "visitor",
+    getUserName: state => state.user.userName || "אורח",
     getUserImage: state => {
       return state.user.image || smiley_b64
     },
@@ -97,12 +97,12 @@ export default new Vuex.Store({
         dispatch('authSuccess', { token, user })
       });
       if (isSeccessful) {
-        Swal.fire("Success", "you logded in", "success");
+        Swal.fire("Success", "התחברת בהצלחה", "success");
         return true;
       } else {
         commit('auth_error')
         localStorage.removeItem('token')
-        Swal.fire("Error", "wrong input", "error");
+        Swal.fire("Error", "קלט לא תקין", "error");
         return false;
       }
     },
@@ -116,12 +116,12 @@ export default new Vuex.Store({
         dispatch('authSuccess', { token, user })
       });
       if (isSeccessful) {
-        Swal.fire("Success", "you signed in", "success");
+        Swal.fire("Success", "נרשמת בהצלחה", "success");
         return true;
       } else {
         commit('auth_error')
         localStorage.removeItem('token')
-        Swal.fire("Error", "wrong input", "error");
+        Swal.fire("Error", "קלט לא תקין", "error");
         return false;
       }
     },
@@ -130,7 +130,7 @@ export default new Vuex.Store({
         commit('logout')
         localStorage.removeItem('token')
         delete axios.defaults.headers.common['Access-Token']
-        Swal.fire("Success", "you logout", "success");
+        Swal.fire("Success", "התנתקת בהצלחה", "success");
         resolve()
       })
     },
