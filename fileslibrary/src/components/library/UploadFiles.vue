@@ -136,7 +136,7 @@ export default {
           Swal.fire("Success", "כל הקבצים הועלו בהצלחה", "success");
           this.$emit('update');
         } else {
-          Swal.fire("Error", "שגיאה בהעלעת הקבצים", "error");
+          Swal.fire("Error", "שגיאה בהעלאת הקבצים", "error");
         }
         this.loading = false;
         this.$emit("update:dialog", false);

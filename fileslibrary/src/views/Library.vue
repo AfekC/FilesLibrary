@@ -58,7 +58,7 @@
               width="45%"
               @click.stop="uploadFilesDialog = true"
             >
-              העלעת קבצים
+              העלאת קבצים
               <v-icon right dark> mdi-cloud-upload </v-icon>
             </v-btn>
             <UploadFiles
