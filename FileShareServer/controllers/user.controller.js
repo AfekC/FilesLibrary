@@ -6,14 +6,17 @@ const bcrypt = require('bcrypt');
 
 const { APP_SECRET = 'secret' } = process.env;
 
+// create jwt token
 const encodeToken = (tokenData) => {
     return njwt.create(tokenData, APP_SECRET).compact();
 }
 
+// decode jwt token
 const decodeToken = (token) => {
     return njwt.verify(token, APP_SECRET).setExpiration(-1).body;
 }
 
+// app middleware for all endpoint(if there is a token it decodes it to user object)
 export const authMiddleware = async (req, res, next) => {
     try {
         const token = req.header('Access-Token');

@@ -3,7 +3,7 @@ import * as express from 'express';
 import multer from "multer";
 const router = express.Router();
 
-
+// initialize a multer object for uploading user profile image
 const upload = multer({
     fileFilter: (req, file, cb) => {
         if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
@@ -15,7 +15,7 @@ const upload = multer({
     }
 });
 
-
+// routs
 router.post('/login', login);
 router.post('/signin', signin);
 router.get('/username/:id', getUserNameById);

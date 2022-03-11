@@ -15,7 +15,7 @@ const cors = require('cors');
 const path = require('path');
 
 
-// create bucket
+// create bucket in MinIO
 (async () => {
     const { minioClient } = require('./minio');
 
@@ -36,7 +36,6 @@ console.log(getLocalIP());
 const port = process.env.PORT || conf.api.port || 4000;
 export const app = express();
 
-// Setting up port with express js
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'uiDist/dist')));
@@ -47,12 +46,10 @@ app.use(session({ secret: 'a string for the session token' }));
 //  Script to setup sqlite DB in memory //
 dao.setupDbForDev();
 
+//server main routs
 app.use('/user', userRoutes);
 app.use('/item', itemRoutes);
 
-app.get('/', (req,res) => {
-    res.sendFile(path.join(__dirname, '../fileslibrary/build/index.html'));
-});
 
 // Error handler
 app.use(function(err, req, res, next) {
@@ -60,6 +57,7 @@ app.use(function(err, req, res, next) {
     if (!err.statusCode) err.statusCode = 500; // If err has no specified error code, set error code to 'Internal Server Error (500)'
     res.status(err.statusCode).send(err.message); // All HTTP requests must have a response, so let's send back an error with its status code and message
 });
+// Setting up port with express js
 app.listen(port, () => {
     console.log('port: ' + port);
 })

@@ -7,6 +7,7 @@ const multerS3 = require('multer-minio-storage-engine');
 
 const { minioClient } = require('../minio');
 
+// initialize the multer with minio server
 const storage = multerS3({
     minio: minioClient,
     bucketName: process.env.MINIO_BUCKET_NAME,
@@ -18,6 +19,7 @@ const storage = multerS3({
 
 const upload = multer({ storage: storage });
 
+// item routs
 router.post('/', itemsController.getAllItems);
 router.post('/upload-files', upload.any(), itemsController.addItem);
 router.post('/new_folder', itemsController.newFolder);

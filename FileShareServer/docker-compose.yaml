@@ -30,8 +30,6 @@ services:
     networks:
       - isolated
 
-## By default this config uses default local driver,
-## For custom volumes replace with volume driver configuration.
 volumes:
   minio_data:
 
